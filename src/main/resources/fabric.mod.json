@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "knowledge-is-power-mod",
+	"version": "${version}",
+	"name": "Knowledge Is Power Mod",
+	"description": "Consume enchantment books, gain powers!",
+	"authors": [
+		"Carmindy Creates"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/knowledge-is-power-mod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.carmindy.kipmod.KnowledgeIsPowerMod"
+		],
+		"fabric-datagen": [
+          "net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"
+		],
+      "client": [
+        "net.carmindy.kipmod.KIPModClient"
+      ]
+	},
+	"mixins": [
+		"knowledge-is-power-mod.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.1",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+  "cardinal-components-entity": [
+  "net.carmindy.kipmod.data.KIPModComponents"
+  ],
+  "suggests": {
+		"another-mod": "*"
+	}
+}
