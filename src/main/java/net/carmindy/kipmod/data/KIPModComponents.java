@@ -1,6 +1,7 @@
 package net.carmindy.kipmod.data;
 
 import net.carmindy.kipmod.KnowledgeIsPowerMod;
+import net.carmindy.kipmod.abilities.AbilityRegistry;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;

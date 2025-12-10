@@ -1,7 +1,10 @@
 package net.carmindy.kipmod;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.abilities.ModAbilities;
+import net.carmindy.kipmod.items.AbilityBookFactory;
 import net.fabricmc.api.ModInitializer;
+import net.carmindy.kipmod.events.BookUseHandler;
+import net.minecraft.item.ItemStack;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
 
@@ -9,8 +12,9 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        KIPModComponents.register();
+        ModAbilities.register();
+        BookUseHandler.registerHandler();
+        ItemStack flameBook = AbilityBookFactory.createAbilityBook(ModAbilities.FLAME);
     }
 
 }
-

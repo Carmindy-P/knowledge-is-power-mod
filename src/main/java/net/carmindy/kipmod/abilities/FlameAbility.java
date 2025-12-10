@@ -7,8 +7,9 @@ public class FlameAbility implements Abilities {
 
     @Override
     public String getId() {
-        return "";
+        return "flame";
     }
+
 
     @Override
     public String getName() {

@@ -4,6 +4,7 @@ import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.carmindy.kipmod.abilities.Abilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
@@ -25,7 +26,6 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     @Override
     public void setLevel(int level) {
         this.level = level;
-        // sync automatically
         KIPModComponents.ABILITIES.sync(player);
     }
 
@@ -41,20 +41,25 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         KIPModComponents.ABILITIES.sync(player);
     }
 
-    // Called when saving/loading world
+    // Called when loading from disk
     @Override
-    public void readFromNbt(NbtCompound tag) {
-        this.level = tag.getInt("Level");
-        if (tag.contains("Ability")) {
-            this.learnedAbility = AbilityRegistry.get(tag.getString("Ability"));
+    public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        this.level = nbt.getInt("Level");
+
+        if (nbt.contains("Ability")) {
+            this.learnedAbility = AbilityRegistry.get(nbt.getString("Ability"));
+        } else {
+            this.learnedAbility = null;
         }
     }
 
+    // Called when saving to disk
     @Override
-    public void writeToNbt(NbtCompound tag) {
-        tag.putInt("Level", level);
+    public void writeToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        nbt.putInt("Level", level);
+
         if (learnedAbility != null) {
-            tag.putString("Ability", learnedAbility.getId());
+            nbt.putString("Ability", learnedAbility.getId());
         }
     }
 }
