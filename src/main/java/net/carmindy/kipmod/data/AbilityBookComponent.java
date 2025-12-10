@@ -1,9 +1,11 @@
 package net.carmindy.kipmod.data;
 
 import net.carmindy.kipmod.abilities.AbilityRegistry;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
@@ -21,13 +23,16 @@ public class AbilityBookComponent {
     private static final String[] SET_NBT_NAMES = {"setNbt", "setTag"};
     private static final String[] HAS_NBT_NAMES = {"hasNbt", "hasTag"};
 
-    /** Sets the ability ID on an ItemStack */
-    public static void setAbility(ItemStack stack, String abilityId) {
-        NbtCompound tag = readNbt(stack);
-        if (tag == null) tag = new NbtCompound();
-        tag.putString(NBT_KEY, abilityId);
-        writeNbt(stack, tag);
+    private Enchantment ability;
+
+    public void setAbility(Enchantment ench) {
+        this.ability = ench;
     }
+
+    public Enchantment getAbility() {
+        return this.ability;
+    }
+
 
     /** Checks if the ItemStack has an ability */
     public static boolean hasAbility(ItemStack stack) {
@@ -74,26 +79,33 @@ public class AbilityBookComponent {
     /**
      * Helper: checks a NbtList of enchantments for a registered ability.
      */
-    @Nullable
     private static String checkEnchantList(NbtList enchants) {
         for (int i = 0; i < enchants.size(); i++) {
             NbtCompound ench = enchants.getCompound(i);
+
             if (!ench.contains("id")) continue;
 
-            String enchantId = ench.getString("id"); // e.g. "minecraft:flame"
+            // Modern MC: enchantments store the ID as a STRING, not a SHORT
+            String enchantId = ench.getString("id");
+            if (enchantId == null || enchantId.isEmpty()) continue;
 
-            // Try full ID first
-            if (AbilityRegistry.get(enchantId) != null) return enchantId;
+            // Try full ID first: "minecraft:flame"
+            if (AbilityRegistry.get(enchantId) != null)
+                return enchantId;
 
-            // Strip namespace if present
+            // Try stripped ID: "flame"
             int colon = enchantId.indexOf(':');
-            if (colon != -1 && colon < enchantId.length() - 1) {
+            if (colon != -1) {
                 String stripped = enchantId.substring(colon + 1);
-                if (AbilityRegistry.get(stripped) != null) return stripped;
+                if (AbilityRegistry.get(stripped) != null)
+                    return stripped;
             }
         }
+
         return null;
     }
+
+
 
 
     @Nullable

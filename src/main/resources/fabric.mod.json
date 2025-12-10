@@ -18,6 +18,9 @@
 		"main": [
 			"net.carmindy.kipmod.KnowledgeIsPowerMod"
 		],
+        "cca": [
+            "net.carmindy.kipmod.KIPModComponents::registerComponents"
+        ],
 		"fabric-datagen": [
           "net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"
 		],
@@ -39,5 +42,11 @@
   ],
   "suggests": {
 		"another-mod": "*"
-	}
+	},
+  "custom": {
+    "cardinal-components": [
+      "kipmod:ability"
+    ]
+  }
+
 }
