@@ -1,19 +1,20 @@
 package net.carmindy.kipmod.events;
 
 import net.carmindy.kipmod.abilities.Abilities;
-import org.ladysnake.cca.api.v3.item.ItemComponentInitializer;
-import org.ladysnake.cca.api.v3.item.ItemComponentMigrationRegistry;
-import net.carmindy.kipmod.abilities.ModAbilities;
 import net.carmindy.kipmod.data.KIPModComponents;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.TypedActionResult;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import org.ladysnake.cca.api.v3.item.ItemComponentInitializer;
+import org.ladysnake.cca.api.v3.item.ItemComponentMigrationRegistry;
 
-import java.util.WeakHashMap;
 
+/**
+ * Handles the event when a player uses an item.
+ * Specifically handles learning abilities from enchanted books.
+ */
 public class BookUseHandler implements ItemComponentInitializer {
 
     public static void registerHandler() {
@@ -24,6 +25,14 @@ public class BookUseHandler implements ItemComponentInitializer {
 
             if (stack.getItem() instanceof EnchantedBookItem) {
                 Abilities ability = net.carmindy.kipmod.items.AbilityBookFactory.getAbilityFromBook(stack);
+
+                // Debug logging
+                System.out.println("[KIPMod] Player " + player.getName().getString() + " used book: " + stack);
+                if (ability != null) {
+                    System.out.println("[KIPMod] Detected ability: " + ability.getId());
+                } else {
+                    System.out.println("[KIPMod] No ability detected on this book.");
+                }
 
                 if (ability != null) {
                     // Apply ability to player
@@ -42,12 +51,10 @@ public class BookUseHandler implements ItemComponentInitializer {
 
             return TypedActionResult.pass(stack);
         });
-
     }
-
 
     @Override
     public void registerItemComponentMigrations(ItemComponentMigrationRegistry itemComponentMigrationRegistry) {
-
+        // No migrations needed
     }
 }

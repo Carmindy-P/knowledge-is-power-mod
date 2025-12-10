@@ -8,6 +8,10 @@ import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
+/**
+ * Implementation of AbilityComponent for players.
+ * Stores the learned ability and its level, and handles syncing to the client.
+ */
 public class AbilityComponentImpl implements AbilityComponent, AutoSyncedComponent {
 
     private final PlayerEntity player;
@@ -26,6 +30,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     @Override
     public void setLevel(int level) {
         this.level = level;
+        // Automatically sync to client when level changes
         KIPModComponents.ABILITIES.sync(player);
     }
 
@@ -38,10 +43,11 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     @Override
     public void setAbility(@Nullable Abilities ability) {
         this.learnedAbility = ability;
+        // Automatically sync to client when ability changes
         KIPModComponents.ABILITIES.sync(player);
     }
 
-    // Called when loading from disk
+    /** Called when loading component data from NBT (disk load) */
     @Override
     public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         this.level = nbt.getInt("Level");
@@ -53,7 +59,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         }
     }
 
-    // Called when saving to disk
+    /** Called when saving component data to NBT (disk save) */
     @Override
     public void writeToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         nbt.putInt("Level", level);

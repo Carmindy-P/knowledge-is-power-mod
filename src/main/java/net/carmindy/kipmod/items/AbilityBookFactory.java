@@ -6,11 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 /**
- * Uses ItemStackNbtCompat so this compiles regardless of the method names in mappings.
+ * Factory class to create and read ability books.
  */
 public class AbilityBookFactory {
     private static final String ABILITY_KEY = "Ability";
 
+    /** Creates an enchanted book ItemStack with the given ability */
     public static ItemStack createAbilityBook(Abilities ability) {
         ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
 
@@ -21,9 +22,9 @@ public class AbilityBookFactory {
         return book;
     }
 
+    /** Reads the ability from an enchanted book */
     public static Abilities getAbilityFromBook(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) return null;
-        if (!ItemStackNbtCompat.hasNbt(stack)) return null;
+        if (stack == null || stack.isEmpty() || !ItemStackNbtCompat.hasNbt(stack)) return null;
 
         Object nbt = ItemStackNbtCompat.getNbt(stack);
         if (nbt == null) return null;
