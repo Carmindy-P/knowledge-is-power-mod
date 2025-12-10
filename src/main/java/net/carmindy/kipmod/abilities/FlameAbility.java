@@ -1,7 +1,6 @@
 package net.carmindy.kipmod.abilities;
 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Hand;
 
 public class FlameAbility implements Abilities {
 
@@ -9,7 +8,6 @@ public class FlameAbility implements Abilities {
     public String getId() {
         return "flame";
     }
-
 
     @Override
     public String getName() {
