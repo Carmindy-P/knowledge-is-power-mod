@@ -13,7 +13,7 @@ public record AbilityUsePayload(String abilityId) implements CustomPayload {
     public CustomPayload.Id<? extends CustomPayload> getId() {
         return ID;
     }
-
+//
     public static AbilityUsePayload decode(PacketByteBuf buf) {
         return new AbilityUsePayload(buf.readString(32767));
     }
