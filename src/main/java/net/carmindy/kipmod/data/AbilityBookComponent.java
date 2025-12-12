@@ -9,6 +9,7 @@ import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Handles storing abilities on ItemStacks (usually enchanted books).
@@ -22,6 +23,14 @@ public class AbilityBookComponent {
     private static final String[] GET_NBT_NAMES = {"getNbt", "getTag", "getOrCreateNbt", "getOrCreateTag"};
     private static final String[] SET_NBT_NAMES = {"setNbt", "setTag"};
     private static final String[] HAS_NBT_NAMES = {"hasNbt", "hasTag"};
+
+    // Maps enchantment IDs to ability IDs
+
+    private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
+            "minecraft:flame", "flame"      // Flame book → Flame ability
+            // Add more mappings here…
+    );
+
 
     private Enchantment ability;
 
@@ -63,11 +72,11 @@ public class AbilityBookComponent {
         NbtCompound tag = readNbt(stack);
         if (tag == null) return null;
 
-        // First, check StoredEnchantments (standard for EnchantedBookItem)
+        // First, check StoredEnchantments
         String ability = checkEnchantList(tag.getList("StoredEnchantments", 10));
         if (ability != null) return ability;
 
-        // Fallback: check Enchantments (used by /give or command-given books)
+        // Fallback: check Enchantments
         if (tag.contains("Enchantments")) {
             ability = checkEnchantList(tag.getList("Enchantments", 10));
             if (ability != null) return ability;
@@ -75,6 +84,7 @@ public class AbilityBookComponent {
 
         return null;
     }
+
 
     /**
      * Helper: checks a NbtList of enchantments for a registered ability.
@@ -85,25 +95,33 @@ public class AbilityBookComponent {
 
             if (!ench.contains("id")) continue;
 
-            // Modern MC: enchantments store the ID as a STRING, not a SHORT
             String enchantId = ench.getString("id");
             if (enchantId == null || enchantId.isEmpty()) continue;
 
-            // Try full ID first: "minecraft:flame"
+            // 1. Direct mapping: enchant → ability
+            String mapped = ENCHANT_TO_ABILITY.get(enchantId);
+            if (mapped != null && AbilityRegistry.get(mapped) != null)
+                return mapped;
+
+            // 2. Try full ID as ability ID
             if (AbilityRegistry.get(enchantId) != null)
                 return enchantId;
 
-            // Try stripped ID: "flame"
+            // 3. Try stripped ID
             int colon = enchantId.indexOf(':');
             if (colon != -1) {
                 String stripped = enchantId.substring(colon + 1);
+                mapped = ENCHANT_TO_ABILITY.get(stripped);
+                if (mapped != null && AbilityRegistry.get(mapped) != null)
+                    return mapped;
                 if (AbilityRegistry.get(stripped) != null)
                     return stripped;
             }
         }
-
         return null;
     }
+
+
 
 
 

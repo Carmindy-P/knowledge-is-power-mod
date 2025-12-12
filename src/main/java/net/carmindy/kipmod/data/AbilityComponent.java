@@ -15,4 +15,7 @@ public interface AbilityComponent extends Component {
 
     @Nullable Abilities getAbility(); // Get the ability instance
     void setAbility(@Nullable Abilities ability); // Assign an ability to the player
+    void tickCooldown();
+    int getCooldown();
+    void setCooldown(int ticks);
 }

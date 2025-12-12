@@ -3,47 +3,55 @@ package net.carmindy.kipmod.abilities;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.entity.Entity;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
+import net.minecraft.text.Text;
 
-/**
- * Example ability that sets an entity on fire.
- */
 public class FlameAbility implements Abilities {
 
     @Override
-    public String getId() {
-        return "flame"; // Unique ID for registry
-    }
+    public String getId() { return "flame"; }
 
     @Override
-    public String getName() {
-        return "Flame Burst"; // Display name
-    }
+    public String getName() { return "Flame Burst"; }
 
     @Override
     public String getDescription() {
-        return "Ignites the target you are looking at."; // Description for UI
+        return "Ignites the target you are looking at (active). Passive: small flame particles.";
     }
 
     @Override
     public void activate(ServerPlayerEntity player) {
-        if (player.getWorld().isClient()) return; // Only run on server side
+        if (player.getWorld().isClient()) return;
 
-        // Raycast to detect target entity within 5 blocks
         var target = player.raycast(5.0, 0, false);
-
-        if (target.getType() == HitResult.Type.ENTITY) {
+        if (target != null && target.getType() == HitResult.Type.ENTITY) {
             var entity = ((EntityHitResult) target).getEntity();
-            entity.setOnFireFor(4); // Set entity on fire for 4 seconds
+            entity.setOnFireFor(4);
+            player.sendMessage(Text.literal("Flame Burst!"), false);
+            spawnFlameParticles((ServerWorld) player.getWorld(), player.getX(), player.getY() + 1, player.getZ());
+        } else {
+            player.sendMessage(Text.literal("No target in range."), false);
         }
     }
 
+    /**
+     * @param player
+     */
     @Override
-    public boolean isOneTimeUse() {
-        return false; // Can be used multiple times
+    public void tick(ServerPlayerEntity player) {
+
+    }
+
+    private void spawnFlameParticles(ServerWorld world, double x, double y, double z) {
+        world.spawnParticles(ParticleTypes.FLAME, x, y, z, 4, 0.2, 0.2, 0.2, 0.01);
     }
 
     @Override
-    public int getCooldownTicks() {
-        return 20 * 10; // 10 seconds cooldown (20 ticks = 1 second)
-    }
+    public boolean isOneTimeUse() { return false; }
+
+    @Override
+    public int getCooldownTicks() { return 20 * 10; } // 10 seconds
 }
