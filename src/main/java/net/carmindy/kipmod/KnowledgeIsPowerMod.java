@@ -8,30 +8,72 @@ import net.carmindy.kipmod.data.KIPModComponents;
 import net.carmindy.kipmod.events.AbilityTickHandler;
 import net.carmindy.kipmod.events.BookUseHandler;
 import net.carmindy.kipmod.network.AbilityPackets;
-
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.carmindy.kipmod.network.TryAbilityBookPayload;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
 
+    private void registerDebugCommands() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(CommandManager.literal("kipmod")
+                    .then(CommandManager.literal("debugbook")
+                            .executes(context -> {
+                                ServerPlayerEntity player = context.getSource().getPlayer();
+                                ItemStack mainHand = player.getMainHandStack();
+
+                                System.out.println("=== DETAILED BOOK ANALYSIS ===");
+                                System.out.println("Item: " + mainHand.getItem());
+                                System.out.println("Item class: " + mainHand.getItem().getClass().getName());
+
+                                NbtCompound tag = AbilityBookComponent.readNbt(mainHand);
+                                System.out.println("NBT contents: " + tag);
+
+                                if (mainHand.getItem() instanceof net.minecraft.item.EnchantedBookItem) {
+                                    System.out.println("This is an EnchantedBookItem!");
+                                }
+
+                                String currentDetection = AbilityBookComponent.getAbility(mainHand);
+                                System.out.println("Current detection result: " + currentDetection);
+
+                                // Print stored enchantments
+                                if (tag != null && tag.contains(AbilityBookComponent.STORED_ENCHANTMENTS_KEY)) {
+                                    NbtList storedEnchantments = tag.getList(AbilityBookComponent.STORED_ENCHANTMENTS_KEY, 10);
+                                    System.out.println("Stored Enchantments:");
+                                    for (int i = 0; i < storedEnchantments.size(); i++) {
+                                        NbtCompound enchant = storedEnchantments.getCompound(i);
+                                        System.out.println("  - ID: " + enchant.getString("id") + ", Level: " + enchant.getInt("lvl"));
+                                    }
+                                }
+
+                                context.getSource().sendFeedback(() ->
+                                        Text.literal("Check console for detailed analysis"), true);
+                                return 1;
+                            })
+                    )
+            );
+        });
+    }
+
     public static final String MOD_ID = "knowledge-is-power-mod";
-    // KnowledgeIsPowerMod.java (or a dedicated NetworkSetup class)
+
     public static void registerPackets() {
-        // codec
         PayloadTypeRegistry.playC2S().register(
                 TryAbilityBookPayload.ID,
                 PacketCodec.of(TryAbilityBookPayload::encode, TryAbilityBookPayload::decode)
         );
 
-        // handler
         ServerPlayNetworking.registerGlobalReceiver(
                 TryAbilityBookPayload.ID,
                 (payload, ctx) -> {
@@ -56,14 +98,13 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                 }
         );
     }
+
     public static void register() {
-        // 1. codec first
         PayloadTypeRegistry.playC2S().register(
                 AbilityUsePayload.ID,
                 PacketCodec.of(AbilityUsePayload::encode, AbilityUsePayload::decode)
         );
 
-        // 2. handler second
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
                 (payload, ctx) -> {
@@ -74,17 +115,15 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                 }
         );
     }
+
     @Override
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
         registerPackets();
         ModAbilities.register();
         BookUseHandler.registerHandler();
-
-        // 1. codec first, handler second – both in one call
-        KnowledgeIsPowerMod.register();
-
         AbilityTickHandler.register();
+        registerDebugCommands();
         System.out.println("Handlers registered.");
     }
 }

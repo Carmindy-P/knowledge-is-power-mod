@@ -1,36 +1,25 @@
 package net.carmindy.kipmod.data;
 
 import net.carmindy.kipmod.abilities.AbilityRegistry;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
-/**
- * Handles storing abilities on ItemStacks (usually enchanted books).
- * Uses reflection to avoid mapping-specific method issues.
- */
 public class AbilityBookComponent {
 
     private static final String NBT_KEY = "Ability";
-    private static final String STORED_ENCHANTMENTS_KEY = "StoredEnchantments";
-
-    private static final String[] GET_NBT_NAMES = {"getNbt", "getTag", "getOrCreateNbt", "getOrCreateTag"};
-    private static final String[] SET_NBT_NAMES = {"setNbt", "setTag"};
-    private static final String[] HAS_NBT_NAMES = {"hasNbt", "hasTag"};
-
-    // Maps enchantment IDs to ability IDs
+    public static final String STORED_ENCHANTMENTS_KEY = "StoredEnchantments";
 
     private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
-            "minecraft:flame", "flame"      // Flame book → Flame ability
-            // Add more mappings here…
+            "minecraft:flame", "flame"
     );
-
 
     private Enchantment ability;
 
@@ -42,16 +31,12 @@ public class AbilityBookComponent {
         return this.ability;
     }
 
-
-    /** Checks if the ItemStack has an ability */
     public static boolean hasAbility(ItemStack stack) {
         NbtCompound tag = readNbt(stack);
         if (tag != null && tag.contains(NBT_KEY)) return true;
-        // fallback: check enchantments
         return getAbilityFromEnchants(stack) != null;
     }
 
-    /** Gets the ability ID from the ItemStack */
     @Nullable
     public static String getAbility(ItemStack stack) {
         NbtCompound tag = readNbt(stack);
@@ -59,7 +44,6 @@ public class AbilityBookComponent {
         return getAbilityFromEnchants(stack);
     }
 
-    /** Removes the ability from the ItemStack */
     public static void removeAbility(ItemStack stack) {
         NbtCompound tag = readNbt(stack);
         if (tag == null) return;
@@ -72,42 +56,49 @@ public class AbilityBookComponent {
         NbtCompound tag = readNbt(stack);
         if (tag == null) return null;
 
-        // First, check StoredEnchantments
         String ability = checkEnchantList(tag.getList("StoredEnchantments", 10));
         if (ability != null) return ability;
 
-        // Fallback: check Enchantments
         if (tag.contains("Enchantments")) {
             ability = checkEnchantList(tag.getList("Enchantments", 10));
             if (ability != null) return ability;
         }
 
+        // Check custom component format
+        ComponentMap components = stack.getComponents();
+        NbtCompound storedEnchantments = (NbtCompound) components.getOrDefault(DataComponentTypes.CUSTOM_DATA, new NbtCompound());
+        if (storedEnchantments.contains("minecraft:stored_enchantments")) {
+            NbtCompound enchantments = storedEnchantments.getCompound("minecraft:stored_enchantments");
+            if (enchantments.contains("levels")) {
+                NbtCompound levels = enchantments.getCompound("levels");
+                for (String enchantId : levels.getKeys()) {
+                    String mapped = ENCHANT_TO_ABILITY.get(enchantId);
+                    if (mapped != null && AbilityRegistry.get(mapped) != null)
+                        return mapped;
+                    if (AbilityRegistry.get(enchantId) != null)
+                        return enchantId;
+                }
+            }
+        }
+
         return null;
     }
 
-
-    /**
-     * Helper: checks a NbtList of enchantments for a registered ability.
-     */
     private static String checkEnchantList(NbtList enchants) {
         for (int i = 0; i < enchants.size(); i++) {
             NbtCompound ench = enchants.getCompound(i);
-
             if (!ench.contains("id")) continue;
 
             String enchantId = ench.getString("id");
             if (enchantId == null || enchantId.isEmpty()) continue;
 
-            // 1. Direct mapping: enchant → ability
             String mapped = ENCHANT_TO_ABILITY.get(enchantId);
             if (mapped != null && AbilityRegistry.get(mapped) != null)
                 return mapped;
 
-            // 2. Try full ID as ability ID
             if (AbilityRegistry.get(enchantId) != null)
                 return enchantId;
 
-            // 3. Try stripped ID
             int colon = enchantId.indexOf(':');
             if (colon != -1) {
                 String stripped = enchantId.substring(colon + 1);
@@ -129,49 +120,15 @@ public class AbilityBookComponent {
     }
 
     @Nullable
-    private static NbtCompound readNbt(ItemStack stack) {
-        Boolean has = invokeBooleanMethod(stack, HAS_NBT_NAMES);
-        if (has != null && !has) return null;
-
-        Object result = invokeMethod(stack, GET_NBT_NAMES);
-        if (result instanceof NbtCompound) return (NbtCompound) result;
-        return null;
+    public static NbtCompound readNbt(ItemStack stack) {
+        if (stack.isEmpty()) return null;
+        ComponentMap components = stack.getComponents();
+        return (NbtCompound) components.getOrDefault(DataComponentTypes.CUSTOM_DATA, new NbtCompound());
     }
 
     private static void writeNbt(ItemStack stack, @Nullable NbtCompound tag) {
-        invokeVoidMethodWithParam(stack, SET_NBT_NAMES, tag);
-    }
+        ComponentMap components = stack.getComponents();
+            components.get(DataComponentTypes.CUSTOM_DATA);
 
-    @Nullable
-    private static Boolean invokeBooleanMethod(ItemStack stack, String[] names) {
-        for (String name : names) {
-            try {
-                Method m = ItemStack.class.getMethod(name);
-                Object res = m.invoke(stack);
-                if (res instanceof Boolean) return (Boolean) res;
-            } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
-    @Nullable
-    private static Object invokeMethod(ItemStack stack, String[] names) {
-        for (String name : names) {
-            try {
-                Method m = ItemStack.class.getMethod(name);
-                return m.invoke(stack);
-            } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
-    private static void invokeVoidMethodWithParam(ItemStack stack, String[] names, @Nullable NbtCompound param) {
-        for (String name : names) {
-            try {
-                Method m = ItemStack.class.getMethod(name, NbtCompound.class);
-                m.invoke(stack, param);
-                return;
-            } catch (Exception ignored) {}
-        }
     }
 }
