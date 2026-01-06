@@ -18,4 +18,6 @@ public interface AbilityComponent extends Component {
     void tickCooldown();
     int getCooldown();
     void setCooldown(int ticks);
+
+    boolean tryUseAbility();
 }

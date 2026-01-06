@@ -1,7 +1,8 @@
 package net.carmindy.kipmod.network;
 
-import net.fabricmc.fabric.api.networking.v1.CustomPayload;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public record AbilityUsePayload(String abilityId) implements CustomPayload {

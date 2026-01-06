@@ -8,10 +8,7 @@ import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-/**
- * Stores a player's learned ability, level, cooldown state, and handles syncing to the client.
- */
-public class AbilityComponentImpl implements AbilityComponent, AutoSyncedComponent {
+public class AbilityComponentImpl implements AbilityComponent, AutoSyncedComponent{
 
     private final PlayerEntity player;
     private int level = 0;
@@ -28,7 +25,9 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
 
     // --- Level ---
     @Override
-    public int getLevel() { return level; }
+    public int getLevel() {
+        return level;
+    }
 
     @Override
     public void setLevel(int level) {
@@ -39,7 +38,9 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     // --- Ability ---
     @Override
     @Nullable
-    public Abilities getAbility() { return learnedAbility; }
+    public Abilities getAbility() {
+        return learnedAbility;
+    }
 
     @Override
     public void setAbility(@Nullable Abilities ability) {
@@ -52,7 +53,9 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
 
     // --- Cooldown ---
     @Override
-    public int getCooldown() { return cooldown; }
+    public int getCooldown() {
+        return cooldown;
+    }
 
     @Override
     public void setCooldown(int ticks) {
@@ -69,7 +72,12 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     }
 
     // --- Use ability ---
-    /** Tries to activate the current ability. Returns true if executed. */
+
+    /**
+     * Tries to activate the current ability. Returns true if executed.
+     *
+     * @return
+     */
     public boolean tryUseAbility() {
         if (player.getWorld().isClient) return false;
         if (learnedAbility == null) return false;

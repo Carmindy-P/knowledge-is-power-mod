@@ -25,11 +25,7 @@ public class AbilityKeybinds {
             if (client.player == null) return;
 
             while (USE_ABILITY.wasPressed()) {
-                String abilityId = KIPModComponents.ABILITIES.get(client.player).getAbility() != null
-                        ? KIPModComponents.ABILITIES.get(client.player).getAbility().getId()
-                        : "";
-
-                ClientPlayNetworking.send(new AbilityUsePayload(abilityId));
+                ClientPlayNetworking.send(new AbilityUsePayload("")); // dummy
             }
         });
     }

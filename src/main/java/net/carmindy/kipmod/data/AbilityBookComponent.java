@@ -121,10 +121,12 @@ public class AbilityBookComponent {
         return null;
     }
 
-
-
-
-
+    public static void setAbility(ItemStack stack, String abilityId) {
+        NbtCompound tag = readNbt(stack);
+        if (tag == null) tag = new NbtCompound();
+        tag.putString(NBT_KEY, abilityId);
+        writeNbt(stack, tag);
+    }
 
     @Nullable
     private static NbtCompound readNbt(ItemStack stack) {

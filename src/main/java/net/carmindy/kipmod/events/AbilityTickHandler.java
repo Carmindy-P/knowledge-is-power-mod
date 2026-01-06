@@ -14,20 +14,10 @@ public class AbilityTickHandler {
 
     private static void onServerTick(MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-
-            var component = KIPModComponents.ABILITIES.get(player);
-            var ability = component.getAbility();
-
-            // decrement cooldown
-            component.tickCooldown();
-
-            if (ability == null) {
-                // remove the noisy debug messages — keep silent when no ability
-                continue;
-            }
-
-            // call the per-tick passive hook
-            ability.tick(player);
+            KIPModComponents.ABILITIES.maybeGet(player).ifPresent(comp -> {
+                comp.tickCooldown();
+                if (comp.getAbility() != null) comp.getAbility().tick(player);
+            });
         }
     }
 }
