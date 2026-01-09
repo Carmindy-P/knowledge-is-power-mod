@@ -22,7 +22,8 @@ public class AbilityBookComponent {
 
     private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
             "minecraft:flame", "flame",
-            "minecraft:efficiency", "efficiency"
+            "minecraft:efficiency", "efficiency",
+            "minecraft:feather_falling", "feather_falling"
     );
 
     private Enchantment ability;
