@@ -30,11 +30,11 @@ public class FeatherFallingAbility implements Abilities {
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
 
-        // Set the activation time to the current tick
+
         activationTime = player.getWorld().getTime();
         player.sendMessage(Text.literal("Flight!"), false);
 
-        // Enable flying
+
         PlayerAbilities abilities = player.getAbilities();
         abilities.allowFlying = true;
         abilities.flying = true;
@@ -48,29 +48,28 @@ public class FeatherFallingAbility implements Abilities {
         if (activationTime != -1) {
             long currentTime = player.getWorld().getTime();
             if (currentTime - activationTime < FLIGHT_DURATION_TICKS) {
-                // Player is still within the flight duration
+
                 PlayerAbilities abilities = player.getAbilities();
                 abilities.allowFlying = true;
                 abilities.flying = true;
-                player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(abilities)); // Update the player's abilities
+                player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(abilities));
             } else {
-                // Flight duration has expired
+
                 PlayerAbilities abilities = player.getAbilities();
                 abilities.allowFlying = false;
                 abilities.flying = false;
-                player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(abilities)); // Update the player's abilities
+                player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(abilities));
                 player.sendMessage(Text.literal("Flight ability has expired."), false);
 
-                // Apply Feather Falling effect to prevent fall damage
                 applyFeatherFallingEffect(player);
 
-                activationTime = -1; // Reset the activation time
+                activationTime = -1;
             }
         }
     }
 
     private void applyFeatherFallingEffect(ServerPlayerEntity player) {
-        // Apply the Feather Falling effect for a short duration (e.g., 5 seconds)
+
         StatusEffectInstance featherFallingEffect = new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20 * 10, 0, false, false);
         player.addStatusEffect(featherFallingEffect);
     }

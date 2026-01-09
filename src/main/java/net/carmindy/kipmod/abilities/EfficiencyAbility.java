@@ -51,13 +51,13 @@ public class EfficiencyAbility implements Abilities {
 
         player.sendMessage(Text.literal("Haste surge!"), false);
 
-        // Set the instamine flag in the player's data component
+
         KIPModComponents.ABILITIES.get(player).setInstamine(true);
     }
 
     @Override
     public void tick(ServerPlayerEntity player) {
-        // Clear the instamine flag after the effect duration
+
         if (!player.hasStatusEffect(StatusEffects.HASTE)) {
             KIPModComponents.ABILITIES.get(player).setInstamine(false);
         }

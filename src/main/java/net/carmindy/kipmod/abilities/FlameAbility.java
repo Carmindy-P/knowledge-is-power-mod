@@ -38,7 +38,7 @@ public class FlameAbility implements Abilities {
         EntityHitResult ehr = ProjectileUtil.raycast(
                 player, start, end,
                 new Box(start, end),
-                e -> !e.isSpectator() && e.canHit() && e != player, // Exclude the player who activated the ability
+                e -> !e.isSpectator() && e.canHit() && e != player,
                 range * range);
 
         if (ehr != null) {
@@ -53,14 +53,13 @@ public class FlameAbility implements Abilities {
             var hit = player.raycast(range, 0, true);
             if (hit instanceof net.minecraft.util.hit.BlockHitResult bhr &&
                     hit.getType() != HitResult.Type.MISS) {
-                // Check if the hit position is too close to the player
+
                 Vec3d hitPos = new Vec3d(bhr.getBlockPos().getX() + 0.5, bhr.getBlockPos().getY() + 0.5, bhr.getBlockPos().getZ() + 0.5);
                 double distanceToPlayer = start.distanceTo(hitPos);
 
-                // Check vertical distance to prevent igniting the ground directly beneath the player
                 double verticalDistance = Math.abs(start.y - hitPos.y);
 
-                if (distanceToPlayer > 1.5 && verticalDistance > 1.0) { // Ensure the hit position is at least 1.5 blocks away and not directly beneath the player
+                if (distanceToPlayer > 1.5 && verticalDistance > 1.0) {
                     ServerWorld w = (ServerWorld) player.getWorld();
                     w.setBlockState(bhr.getBlockPos().offset(bhr.getSide()),
                             net.minecraft.block.Blocks.FIRE.getDefaultState());
@@ -92,5 +91,5 @@ public class FlameAbility implements Abilities {
     public boolean isOneTimeUse() { return false; }
 
     @Override
-    public int getCooldownTicks() { return 20 * 10; } // 10 seconds
+    public int getCooldownTicks() { return 20 * 10; }
 }

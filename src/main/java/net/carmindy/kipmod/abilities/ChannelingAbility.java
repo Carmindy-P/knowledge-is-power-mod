@@ -42,7 +42,7 @@ public class ChannelingAbility implements Abilities {
         EntityHitResult ehr = ProjectileUtil.raycast(
                 player, start, end,
                 new Box(start, end),
-                e -> !e.isSpectator() && e.canHit() && e != player, // Exclude the player who activated the ability
+                e -> !e.isSpectator() && e.canHit() && e != player,
                 range * range);
 
         if (ehr != null) {
@@ -67,11 +67,11 @@ public class ChannelingAbility implements Abilities {
 
     @Override
     public void tick(ServerPlayerEntity player) {
-        // No tick logic implemented
+
     }
 
     private void strikeLightning(ServerWorld world, Vec3d pos) {
-        // Use EntityType.LIGHTNING_BOLT to create a lightning bolt
+
         Entity lightningEntity = EntityType.LIGHTNING_BOLT.create(world);
         if (lightningEntity != null) {
             lightningEntity.setPosition(pos.x, pos.y, pos.z);
