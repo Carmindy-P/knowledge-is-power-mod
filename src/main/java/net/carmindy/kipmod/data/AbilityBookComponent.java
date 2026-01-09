@@ -4,11 +4,14 @@ import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 
 import java.util.Map;
 
@@ -18,7 +21,8 @@ public class AbilityBookComponent {
     public static final String STORED_ENCHANTMENTS_KEY = "StoredEnchantments";
 
     private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
-            "minecraft:flame", "flame"
+            "minecraft:flame", "flame",
+            "minecraft:efficiency", "efficiency"
     );
 
     private Enchantment ability;
@@ -53,6 +57,15 @@ public class AbilityBookComponent {
 
     @Nullable
     private static String getAbilityFromEnchants(ItemStack stack) {
+        ItemEnchantmentsComponent comp = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (comp != null && !comp.isEmpty()) {
+            for (var entry : comp.getEnchantmentEntries()) {
+                String id = entry.getKey().getKey().get().getValue().toString();
+                String mapped = ENCHANT_TO_ABILITY.get(id);
+                if (mapped != null && AbilityRegistry.get(mapped) != null) return mapped;
+                if (AbilityRegistry.get(id)      != null) return id;
+            }
+        }
         NbtCompound tag = readNbt(stack);
         if (tag == null) return null;
 
@@ -122,13 +135,15 @@ public class AbilityBookComponent {
     @Nullable
     public static NbtCompound readNbt(ItemStack stack) {
         if (stack.isEmpty()) return null;
-        ComponentMap components = stack.getComponents();
-        return (NbtCompound) components.getOrDefault(DataComponentTypes.CUSTOM_DATA, new NbtCompound());
+        NbtComponent comp = stack.get(DataComponentTypes.CUSTOM_DATA);
+        return comp != null ? comp.copyNbt() : new NbtCompound();   // <- safe
     }
 
     private static void writeNbt(ItemStack stack, @Nullable NbtCompound tag) {
-        ComponentMap components = stack.getComponents();
-            components.get(DataComponentTypes.CUSTOM_DATA);
-
+        if (tag == null || tag.isEmpty()) {
+            stack.remove(DataComponentTypes.CUSTOM_DATA);
+        } else {
+            stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(tag));
+        }
     }
 }

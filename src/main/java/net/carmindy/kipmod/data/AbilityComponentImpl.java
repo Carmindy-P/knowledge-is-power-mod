@@ -8,22 +8,18 @@ import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-public class AbilityComponentImpl implements AbilityComponent, AutoSyncedComponent{
+public class AbilityComponentImpl implements AbilityComponent, AutoSyncedComponent {
 
     private final PlayerEntity player;
     private int level = 0;
-
-    @Nullable
-    private Abilities learnedAbility = null;
-
-    // server-side cooldown counter
+    private @Nullable Abilities learnedAbility = null;
     private int cooldown = 0;
+    private boolean instamine = false; // Instamine flag
 
     public AbilityComponentImpl(PlayerEntity player) {
         this.player = player;
     }
 
-    // --- Level ---
     @Override
     public int getLevel() {
         return level;
@@ -35,7 +31,6 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         KIPModComponents.ABILITIES.sync(player);
     }
 
-    // --- Ability ---
     @Override
     @Nullable
     public Abilities getAbility() {
@@ -51,7 +46,6 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         KIPModComponents.ABILITIES.sync(player);
     }
 
-    // --- Cooldown ---
     @Override
     public int getCooldown() {
         return cooldown;
@@ -71,36 +65,37 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         }
     }
 
-    // --- Use ability ---
-
-    /**
-     * Tries to activate the current ability. Returns true if executed.
-     *
-     * @return
-     */
+    @Override
     public boolean tryUseAbility() {
         if (player.getWorld().isClient) return false;
         if (learnedAbility == null) return false;
         if (cooldown > 0) return false;
 
-        // Activate ability
         learnedAbility.activate((net.minecraft.server.network.ServerPlayerEntity) player);
 
-        // Remove one-time abilities automatically
         if (learnedAbility.isOneTimeUse()) {
             setAbility(null);
         }
 
-        // Apply cooldown
         setCooldown(learnedAbility.getCooldownTicks());
         return true;
     }
 
-    // --- NBT Serialization ---
+    @Override
+    public void setInstamine(boolean value) {
+        this.instamine = value;
+        KIPModComponents.ABILITIES.sync(player);
+    }
+
+    @Override
+    public boolean isInstamine() {
+        return instamine;
+    }
     @Override
     public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         this.level = nbt.getInt("Level");
         this.cooldown = nbt.getInt("Cooldown");
+        this.instamine = nbt.getBoolean("Instamine");
         if (nbt.contains("Ability")) {
             this.learnedAbility = AbilityRegistry.get(nbt.getString("Ability"));
         } else {
@@ -112,6 +107,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     public void writeToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         nbt.putInt("Level", level);
         nbt.putInt("Cooldown", cooldown);
+        nbt.putBoolean("Instamine", instamine);
         if (learnedAbility != null) {
             nbt.putString("Ability", learnedAbility.getId());
         }

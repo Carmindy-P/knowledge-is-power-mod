@@ -7,7 +7,7 @@ import net.carmindy.kipmod.data.AbilityBookComponent;
 import net.carmindy.kipmod.data.KIPModComponents;
 import net.carmindy.kipmod.events.AbilityTickHandler;
 import net.carmindy.kipmod.events.BookUseHandler;
-import net.carmindy.kipmod.network.AbilityPackets;
+import net.carmindy.kipmod.events.EffBreakHandler;
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.carmindy.kipmod.network.TryAbilityBookPayload;
 import net.fabricmc.api.ModInitializer;
@@ -24,6 +24,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
+
+    public static final String MOD_ID = "knowledge-is-power-mod";
 
     private void registerDebugCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -47,7 +49,6 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                                 String currentDetection = AbilityBookComponent.getAbility(mainHand);
                                 System.out.println("Current detection result: " + currentDetection);
 
-                                // Print stored enchantments
                                 if (tag != null && tag.contains(AbilityBookComponent.STORED_ENCHANTMENTS_KEY)) {
                                     NbtList storedEnchantments = tag.getList(AbilityBookComponent.STORED_ENCHANTMENTS_KEY, 10);
                                     System.out.println("Stored Enchantments:");
@@ -58,7 +59,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                                 }
 
                                 context.getSource().sendFeedback(() ->
-                                        Text.literal("Check console for detailed analysis"), true);
+                                        Text.literal("Check console for detailed analysis"), false);
                                 return 1;
                             })
                     )
@@ -66,9 +67,10 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         });
     }
 
-    public static final String MOD_ID = "knowledge-is-power-mod";
 
     public static void registerPackets() {
+
+
         PayloadTypeRegistry.playC2S().register(
                 TryAbilityBookPayload.ID,
                 PacketCodec.of(TryAbilityBookPayload::encode, TryAbilityBookPayload::decode)
@@ -76,30 +78,27 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
         ServerPlayNetworking.registerGlobalReceiver(
                 TryAbilityBookPayload.ID,
-                (payload, ctx) -> {
-                    ctx.server().execute(() -> {
-                        ServerPlayerEntity player = ctx.player();
-                        ItemStack stack = player.getMainHandStack();
-                        if (!stack.isOf(Items.ENCHANTED_BOOK)) return;
+                (payload, ctx) -> ctx.server().execute(() -> {
+                    ServerPlayerEntity player = ctx.player();
+                    ItemStack stack = player.getMainHandStack();
 
-                        String abilityId = AbilityBookComponent.getAbility(stack);
-                        if (abilityId == null) {
-                            player.sendMessage(Text.literal("No registered ability for this book."), false);
-                            return;
-                        }
+                    if (!(stack.getItem() instanceof net.minecraft.item.EnchantedBookItem)) return;
 
-                        AbilityBookComponent.setAbility(stack, abilityId);
-                        Abilities ability = AbilityRegistry.get(abilityId);
-                        if (ability != null) {
-                            KIPModComponents.ABILITIES.get(player).setAbility(ability);
-                            player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
-                        }
-                    });
-                }
+                    String abilityId = AbilityBookComponent.getAbility(stack);
+                    if (abilityId == null) {
+                        player.sendMessage(Text.literal("No registered ability for this book."), false);
+                        return;
+                    }
+
+                    Abilities ability = AbilityRegistry.get(abilityId);
+                    if (ability != null) {
+                        KIPModComponents.ABILITIES.get(player).setAbility(ability);
+                        player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
+                    }
+                })
         );
-    }
 
-    public static void register() {
+
         PayloadTypeRegistry.playC2S().register(
                 AbilityUsePayload.ID,
                 PacketCodec.of(AbilityUsePayload::encode, AbilityUsePayload::decode)
@@ -107,23 +106,24 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
-                (payload, ctx) -> {
-                    ctx.server().execute(() -> {
-                        var comp = KIPModComponents.ABILITIES.get(ctx.player());
-                        comp.tryUseAbility();
-                    });
-                }
+                (payload, ctx) -> ctx.server().execute(() -> {
+                    var comp = KIPModComponents.ABILITIES.get(ctx.player());
+                    comp.tryUseAbility();
+                })
         );
     }
 
     @Override
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
+
         registerPackets();
         ModAbilities.register();
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
+        EffBreakHandler.register();
         registerDebugCommands();
+
         System.out.println("Handlers registered.");
     }
 }

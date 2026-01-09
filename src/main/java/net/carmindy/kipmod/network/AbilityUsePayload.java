@@ -1,25 +1,19 @@
 package net.carmindy.kipmod.network;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record AbilityUsePayload(String abilityId) implements CustomPayload {
+public record AbilityUsePayload() implements CustomPayload {
 
     public static final CustomPayload.Id<AbilityUsePayload> ID =
             new CustomPayload.Id<>(Identifier.of("knowledge_is_power_mod", "use_ability"));
 
-    @Override
-    public CustomPayload.Id<? extends CustomPayload> getId() {
-        return ID;
-    }
-//
-    public static AbilityUsePayload decode(PacketByteBuf buf) {
-        return new AbilityUsePayload(buf.readString(32767));
-    }
+    public static final AbilityUsePayload INSTANCE = new AbilityUsePayload();
 
-    public void encode(PacketByteBuf buf) {
-        buf.writeString(abilityId);
-    }
+    public static AbilityUsePayload decode(PacketByteBuf buf) { return INSTANCE; }
+    public void encode(PacketByteBuf buf) { }
+
+    @Override
+    public CustomPayload.Id<? extends CustomPayload> getId() { return ID; }
 }

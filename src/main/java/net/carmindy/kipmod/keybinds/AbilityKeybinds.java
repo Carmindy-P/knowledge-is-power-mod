@@ -25,7 +25,7 @@ public class AbilityKeybinds {
             if (client.player == null) return;
 
             while (USE_ABILITY.wasPressed()) {
-                ClientPlayNetworking.send(new AbilityUsePayload("")); // dummy
+                ClientPlayNetworking.send(AbilityUsePayload.INSTANCE);
             }
         });
     }

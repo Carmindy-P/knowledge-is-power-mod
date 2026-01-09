@@ -15,6 +15,9 @@
 	"icon": "assets/knowledge-is-power-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
+      "server": [
+        "net.carmindy.kipmod.KIPModServer"
+      ],
 		"main": [
 			"net.carmindy.kipmod.KnowledgeIsPowerMod"
 		],
@@ -26,6 +29,9 @@
 		],
       "client": [
         "net.carmindy.kipmod.KIPModClient"
+      ],
+      "cardinal-components-entity": [
+        "net.carmindy.kipmod.data.KIPModComponents"
       ]
 	},
 	"mixins": [
