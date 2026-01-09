@@ -22,38 +22,54 @@ public class FlameAbility implements Abilities {
 
     @Override
     public String getDescription() {
-        return "Ignites the target you are looking at (active). Passive: small flame particles.";
+        return "Ignites the target you are looking at (active).";
     }
 
     @Override
     public void activate(ServerPlayerEntity player) {
-        if (player.getWorld().isClient()) return;
+        if (!(player.getWorld() instanceof ServerWorld)) return;
+
+        double range = 10.0;
 
         Vec3d start = player.getCameraPosVec(1.0F);
-        Vec3d rot   = player.getRotationVec(1.0F);
-        Vec3d end   = start.add(rot.multiply(4.5));
+        Vec3d rot = player.getRotationVec(1.0F);
+        Vec3d end = start.add(rot.multiply(range));
 
         EntityHitResult ehr = ProjectileUtil.raycast(
                 player, start, end,
                 new Box(start, end),
-                e -> !e.isSpectator() && e.canHit(),
-                4.5 * 4.5);
+                e -> !e.isSpectator() && e.canHit() && e != player, // Exclude the player who activated the ability
+                range * range);
 
         if (ehr != null) {
-            ehr.getEntity().setOnFireFor(4);
+            Entity target = ehr.getEntity();
+            if (target instanceof ServerPlayerEntity) {
+                ((ServerPlayerEntity) target).sendMessage(Text.literal("You have been ignited by Flame Burst!"), false);
+            }
+            target.setOnFireFor(4);
             player.sendMessage(Text.literal("Flame Burst!"), false);
-            spawnFlameParticles((ServerWorld) player.getWorld(), player.getX(), player.getY() + 1, player.getZ());
-        } else {                                 // ---------- try block ----------
-            var hit = player.raycast(4.5, 0, true);        // HitResult
+            spawnFlameParticles((ServerWorld) player.getWorld(), target.getX(), target.getY() + 1, target.getZ());
+        } else {
+            var hit = player.raycast(range, 0, true);
             if (hit instanceof net.minecraft.util.hit.BlockHitResult bhr &&
                     hit.getType() != HitResult.Type.MISS) {
+                // Check if the hit position is too close to the player
+                Vec3d hitPos = new Vec3d(bhr.getBlockPos().getX() + 0.5, bhr.getBlockPos().getY() + 0.5, bhr.getBlockPos().getZ() + 0.5);
+                double distanceToPlayer = start.distanceTo(hitPos);
 
-                ServerWorld w = (ServerWorld) player.getWorld();
-                w.setBlockState(bhr.getBlockPos().offset(bhr.getSide()),
-                        net.minecraft.block.Blocks.FIRE.getDefaultState());
-                player.sendMessage(Text.literal("Flame Burst!"), false);
-                spawnFlameParticles((ServerWorld) player.getWorld(),
-                        player.getX(), player.getY() + 1, player.getZ());
+                // Check vertical distance to prevent igniting the ground directly beneath the player
+                double verticalDistance = Math.abs(start.y - hitPos.y);
+
+                if (distanceToPlayer > 1.5 && verticalDistance > 1.0) { // Ensure the hit position is at least 1.5 blocks away and not directly beneath the player
+                    ServerWorld w = (ServerWorld) player.getWorld();
+                    w.setBlockState(bhr.getBlockPos().offset(bhr.getSide()),
+                            net.minecraft.block.Blocks.FIRE.getDefaultState());
+                    player.sendMessage(Text.literal("Flame Burst!"), false);
+                    spawnFlameParticles((ServerWorld) player.getWorld(),
+                            player.getX(), player.getY() + 1, player.getZ());
+                } else {
+                    player.sendMessage(Text.literal("Target is too close or directly beneath you."), false);
+                }
             } else {
                 player.sendMessage(Text.literal("No target in range."), false);
             }

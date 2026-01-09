@@ -32,7 +32,7 @@ public class FeatherFallingAbility implements Abilities {
 
         // Set the activation time to the current tick
         activationTime = player.getWorld().getTime();
-        player.sendMessage(Text.literal("Fly!"), false);
+        player.sendMessage(Text.literal("Flight!"), false);
 
         // Enable flying
         PlayerAbilities abilities = player.getAbilities();
@@ -82,6 +82,6 @@ public class FeatherFallingAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 20 * 60;
+        return 20 * 15;
     }
 }
