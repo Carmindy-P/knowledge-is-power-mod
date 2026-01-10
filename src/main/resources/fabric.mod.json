@@ -15,21 +15,27 @@
 	"icon": "assets/knowledge-is-power-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
+      "server": [
+        "net.carmindy.kipmod.KIPModServer"
+      ],
 		"main": [
 			"net.carmindy.kipmod.KnowledgeIsPowerMod"
 		],
         "cca": [
-            "net.carmindy.kipmod.KIPModComponents::registerComponents"
+            "net.carmindy.kipmod.data.KIPModComponents"
         ],
 		"fabric-datagen": [
           "net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"
 		],
       "client": [
         "net.carmindy.kipmod.KIPModClient"
+      ],
+      "cardinal-components-entity": [
+        "net.carmindy.kipmod.data.KIPModComponents"
       ]
 	},
 	"mixins": [
-		"knowledge-is-power-mod.mixins.json"
+      "kipmod.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.18.1",
@@ -45,7 +51,7 @@
 	},
   "custom": {
     "cardinal-components": [
-      "kipmod:ability"
+      "knowledge-is-power-mod:abilities"
     ]
   }
 

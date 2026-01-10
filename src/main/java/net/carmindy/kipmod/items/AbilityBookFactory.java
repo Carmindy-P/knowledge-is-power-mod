@@ -4,6 +4,7 @@ import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * Factory class to create and read ability books.
@@ -17,7 +18,7 @@ public class AbilityBookFactory {
 
         Object nbt = ItemStackNbtCompat.getOrCreateNbt(book);
         if (nbt != null) {
-            ItemStackNbtCompat.putString(nbt, ABILITY_KEY, ability.getId());
+            ItemStackNbtCompat.putString((NbtCompound) nbt, ABILITY_KEY, ability.getId());
         }
         return book;
     }
@@ -29,8 +30,8 @@ public class AbilityBookFactory {
         Object nbt = ItemStackNbtCompat.getNbt(stack);
         if (nbt == null) return null;
 
-        if (ItemStackNbtCompat.contains(nbt, ABILITY_KEY)) {
-            String id = ItemStackNbtCompat.getString(nbt, ABILITY_KEY);
+        if (ItemStackNbtCompat.contains((NbtCompound) nbt, ABILITY_KEY)) {
+            String id = ItemStackNbtCompat.getString((NbtCompound) nbt, ABILITY_KEY);
             if (id != null && !id.isEmpty()) {
                 return AbilityRegistry.get(id);
             }
