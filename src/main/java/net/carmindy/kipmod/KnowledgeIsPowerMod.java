@@ -3,6 +3,7 @@ package net.carmindy.kipmod;
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.carmindy.kipmod.abilities.ModAbilities;
+import net.carmindy.kipmod.config.KIPModAutoConfig;
 import net.carmindy.kipmod.data.AbilityBookComponent;
 import net.carmindy.kipmod.data.KIPModComponents;
 import net.carmindy.kipmod.events.AbilityTickHandler;
@@ -106,8 +107,13 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
                 (payload, ctx) -> ctx.server().execute(() -> {
-                    var comp = KIPModComponents.ABILITIES.get(ctx.player());
-                    comp.tryUseAbility();
+                    var comp = KIPModComponents.ABILITIES.maybeGet(ctx.player());
+                    if (comp == null) {
+                        ctx.player().sendMessage(Text.literal("Error: Abilities component not found!"), false);
+                        return;
+                    }
+                    comp.get().tryUseAbility();
+
                 })
         );
     }
@@ -115,13 +121,14 @@ public class KnowledgeIsPowerMod implements ModInitializer {
     @Override
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
-
-        registerPackets();
+        KIPModAutoConfig.init();
         ModAbilities.register();
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
         EffBreakHandler.register();
+        registerPackets();
         registerDebugCommands();
         System.out.println("Handlers registered.");
     }
+
 }
