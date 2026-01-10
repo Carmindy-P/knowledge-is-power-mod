@@ -24,7 +24,8 @@ public class AbilityBookComponent {
             "minecraft:flame", "flame",
             "minecraft:efficiency", "efficiency",
             "minecraft:feather_falling", "feather_falling",
-            "minecraft:channeling", "channeling"
+            "minecraft:channeling", "channeling",
+            "minecraft:mending", "mending"
     );
 
     private Enchantment ability;
@@ -42,6 +43,7 @@ public class AbilityBookComponent {
         if (tag != null && tag.contains(NBT_KEY)) return true;
         return getAbilityFromEnchants(stack) != null;
     }
+
 
     @Nullable
     public static String getAbility(ItemStack stack) {

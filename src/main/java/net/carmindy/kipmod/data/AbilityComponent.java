@@ -10,6 +10,9 @@ public interface AbilityComponent extends Component {
     void setLevel(int level); // Set the player's ability level
 
     @Nullable Abilities getAbility(); // Get the ability instance
+
+    void onXpGain(int orbValue);
+
     void setAbility(@Nullable Abilities ability); // Assign an ability to the player
     void tickCooldown();
     int getCooldown();

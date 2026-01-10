@@ -3,7 +3,8 @@
   "package": "net.carmindy.kipmod.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "ExperienceOrbMixin"
   ],
   "injectors": {
     "defaultRequire": 1

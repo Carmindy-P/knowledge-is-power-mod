@@ -2,9 +2,12 @@ package net.carmindy.kipmod.data;
 
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
+import net.carmindy.kipmod.abilities.MendingAbility;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
@@ -14,7 +17,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     private int level = 0;
     private @Nullable Abilities learnedAbility = null;
     private int cooldown = 0;
-    private boolean instamine = false; // Instamine flag
+    private boolean instamine = false;
 
     public AbilityComponentImpl(PlayerEntity player) {
         this.player = player;
@@ -36,12 +39,27 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     public Abilities getAbility() {
         return learnedAbility;
     }
+    @Override
+    public void onXpGain(int orbValue) {
+        if (player.getWorld().isClient()) return;          // safety
+        if (!(learnedAbility instanceof MendingAbility)) return;
+
+        // 1 heart (2 × half-hearts) per 10 xp – tune as you like
+        int hearts = orbValue / 10;
+        if (hearts <= 0) return;
+
+        player.heal(hearts * 2);
+        player.sendMessage(
+                Text.literal("Mending healed " + hearts + " ♥"),
+                false
+        );
+    }
 
     @Override
     public void setAbility(@Nullable Abilities ability) {
         this.learnedAbility = ability;
         if (ability != null && !player.getWorld().isClient()) {
-            ability.onApply((net.minecraft.server.network.ServerPlayerEntity) player);
+            ability.onApply((ServerPlayerEntity) player);
         }
         KIPModComponents.ABILITIES.sync(player);
     }
@@ -71,7 +89,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         if (learnedAbility == null) return false;
         if (cooldown > 0) return false;
 
-        learnedAbility.activate((net.minecraft.server.network.ServerPlayerEntity) player);
+        learnedAbility.activate((ServerPlayerEntity) player);
 
         if (learnedAbility.isOneTimeUse()) {
             setAbility(null);
@@ -91,6 +109,7 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     public boolean isInstamine() {
         return instamine;
     }
+
     @Override
     public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         this.level = nbt.getInt("Level");
@@ -112,4 +131,5 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
             nbt.putString("Ability", learnedAbility.getId());
         }
     }
+
 }

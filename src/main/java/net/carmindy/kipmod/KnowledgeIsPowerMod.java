@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.codec.PacketCodec;
@@ -123,7 +122,6 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         AbilityTickHandler.register();
         EffBreakHandler.register();
         registerDebugCommands();
-
         System.out.println("Handlers registered.");
     }
 }

@@ -35,7 +35,7 @@
       ]
 	},
 	"mixins": [
-		"knowledge-is-power-mod.mixins.json"
+      "kipmod.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.18.1",
