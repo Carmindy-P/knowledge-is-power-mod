@@ -3,7 +3,9 @@ package net.carmindy.kipmod;
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.carmindy.kipmod.abilities.ModAbilities;
+import net.carmindy.kipmod.config.KIPModAutoConfig;
 import net.carmindy.kipmod.data.AbilityBookComponent;
+import net.carmindy.kipmod.data.AbilityComponent;
 import net.carmindy.kipmod.data.KIPModComponents;
 import net.carmindy.kipmod.events.AbilityTickHandler;
 import net.carmindy.kipmod.events.BookUseHandler;
@@ -21,6 +23,8 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
 
@@ -106,8 +110,13 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
                 (payload, ctx) -> ctx.server().execute(() -> {
-                    var comp = KIPModComponents.ABILITIES.get(ctx.player());
-                    comp.tryUseAbility();
+                    var comp = KIPModComponents.ABILITIES.maybeGet(ctx.player());
+                    if (comp == null) {
+                        ctx.player().sendMessage(Text.literal("Error: Abilities component not found!"), false);
+                        return;
+                    }
+                    comp.get().tryUseAbility();
+
                 })
         );
     }
@@ -115,13 +124,18 @@ public class KnowledgeIsPowerMod implements ModInitializer {
     @Override
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
-
-        registerPackets();
+        KIPModComponents.ABILITIES = ComponentRegistry.getOrCreate(
+                Identifier.of(MOD_ID, "abilities"),
+                AbilityComponent.class
+        );
+        KIPModAutoConfig.init();
         ModAbilities.register();
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
         EffBreakHandler.register();
+        registerPackets();
         registerDebugCommands();
         System.out.println("Handlers registered.");
     }
+
 }

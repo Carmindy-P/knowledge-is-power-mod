@@ -44,38 +44,41 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 | `/kipmod debugbook` | Dumps full NBT of the book you’re holding to server console – useful when creating custom books. |
 
 ---
+## 🧪 For Pack-Makers & Addon Devs
 
-## 🔧 For Developers
+### ✅ Add a new enchantment → existing power (no code)
+1. Create a **data-pack** (or include in your mod’s `data/`)
+2. Add the enchantment to the desired tag:  
+   `data/kipmod/tags/enchantment/grants_flame_ability.json`
+   ```json
+   {
+     "replace": false,
+     "values": [
+       "your_mod:blazing_touch"
+     ]
+   }
+   ```
+   Done! Any book with `your_mod:blazing_touch` now grants **Flame Burst**.
 
-### Add your own power in 3 steps
+---
 
-1. Implement `Abilities`
+### ✅ Add a brand-new ability (tiny Java snippet)
 
+1. Implement `Abilities`:
+   ```java
+   public class VoidBlinkAbility implements Abilities {
+       public String getId() { return "void_blink"; }
+       public void activate(ServerPlayerEntity player){
+           // your logic
+       }
+       // …other methods
+   }
+   ```
+   Register it:
 ```java
-public class MyPower implements Abilities {
-    public String getId() { return "my_power"; }
-    public void activate(ServerPlayerEntity player){
-        // your logic
-    }
-    // …other methods
-}
+AbilityRegistry.register("void_blink", new VoidBlinkAbility());
 ```
-## Register it
-
-Add to `ModAbilities`:
-```java
-public static final MyPower MY_POWER = new MyPower();
-```
-In `ModAbilities.register()`:
-```java
-AbilityRegistry.register(MY_POWER.getId(), MY_POWER);
-```
-
-Map the enchant in AbilityBookComponent.ENCHANT_TO_ABILITY:
-```java
-"minecraft:my_enchant", "my_power"
-```
-That’s it – the existing book-learning, keybind and cooldown code works automatically.
+Map it to an enchantment (tag or fallback map) → players can now learn it like any other book.
 
 ---
 
