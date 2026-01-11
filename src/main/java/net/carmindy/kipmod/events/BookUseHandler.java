@@ -2,9 +2,7 @@ package net.carmindy.kipmod.events;
 
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
-import net.carmindy.kipmod.config.KIPModAutoConfig;
 import net.carmindy.kipmod.data.AbilityBookComponent;
-import net.carmindy.kipmod.data.AbilityComponent;
 import net.carmindy.kipmod.data.KIPModComponents;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
@@ -30,31 +28,9 @@ public class BookUseHandler {
                 return TypedActionResult.pass(stack);
             }
 
-            AbilityComponent abilityComponent = KIPModComponents.ABILITIES.get(player);
-
-            switch (abilityId) {
-                case "flame" -> {
-                    if (!KIPModAutoConfig.CONFIG.enableFlame) return TypedActionResult.pass(stack);
-                }
-                case "efficiency" -> {
-                    if (!KIPModAutoConfig.CONFIG.enableEfficiency) return TypedActionResult.pass(stack);
-                }
-                case "channeling" -> {
-                    if (!KIPModAutoConfig.CONFIG.enableChanneling) return TypedActionResult.pass(stack);
-                }
-                case "feather_falling" -> {
-                    if (!KIPModAutoConfig.CONFIG.enableFeatherFall) return TypedActionResult.pass(stack);
-                }
-                case "mending" -> {
-                    if (!KIPModAutoConfig.CONFIG.enableMending) return TypedActionResult.pass(stack);
-                }
-            }
-
-            AbilityBookComponent.setAbility(stack, abilityId);
-
             Abilities ability = AbilityRegistry.get(abilityId);
             if (ability != null) {
-                abilityComponent.setAbility(ability);
+                KIPModComponents.ABILITIES.get(player).setAbility(ability);
                 player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
 
                 if (!player.isCreative() && !player.isSpectator()) {

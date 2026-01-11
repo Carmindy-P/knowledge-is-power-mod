@@ -4,33 +4,55 @@
   "version": "${version}",
   "name": "Knowledge Is Power Mod",
   "description": "Consume enchantment books, gain powers!",
-  "authors": ["Carmindy Creates"],
-  "license": "MIT",
-  "environment": "*",
-
-  "entrypoints": {
-    "main": ["net.carmindy.kipmod.KnowledgeIsPowerMod"],
-    "server": ["net.carmindy.kipmod.KIPModServer"],
-    "client": ["net.carmindy.kipmod.KIPModClient"],
-    "modmenu": ["net.carmindy.kipmod.config.ModMenuIntegration"],
-    "cardinal-components-entity": ["net.carmindy.kipmod.data.KIPEntityComponents"],
-    "fabric-datagen": ["net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"]
+  "authors": [
+    "Carmindy Creates"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
-  "mixins": ["kipmod.mixins.json"],
-
+  "license": "MIT",
+  "icon": "assets/knowledge-is-power-mod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      "net.carmindy.kipmod.KIPModServer"
+    ],
+    "main": [
+      "net.carmindy.kipmod.KnowledgeIsPowerMod"
+    ],
+    "cca": [
+      "net.carmindy.kipmod.data.KIPModComponents"
+    ],
+    "fabric-datagen": [
+      "net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"
+    ],
+    "client": [
+      "net.carmindy.kipmod.KIPModClient"
+    ],
+    "cardinal-components-entity": [
+      "net.carmindy.kipmod.data.KIPModComponents"
+    ]
+  },
+  "mixins": [
+    "kipmod.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.18.1",
     "minecraft": "~1.21.1",
     "java": ">=21",
     "fabric-api": "*"
   },
-
+  "cardinal-components-entity": [
+    "net.carmindy.kipmod.data.KIPModComponents"
+  ],
   "suggests": {
-    "modmenu": "*",
-    "cloth-config": "*"
+    "another-mod": "*"
   },
-
   "custom": {
-    "modmenu": { "update_checker": false }
+    "cardinal-components": [
+      "knowledge-is-power-mod:abilities"
+    ]
   }
+
 }

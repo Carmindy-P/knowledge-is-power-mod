@@ -8,13 +8,25 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import net.minecraft.util.Identifier;
 
-// KIPModComponents.java
-public final class KIPModComponents {
-    public static final ComponentKey<AbilityComponent> ABILITIES =
+/**
+ * Registers all mod components with Cardinal Components API.
+ * In this case, registers the player ability component.
+ */
+public class KIPModComponents implements EntityComponentInitializer {
+
+    public static ComponentKey<AbilityComponent> ABILITIES =
             ComponentRegistry.getOrCreate(
-                    Identifier.of("knowledge-is-power-mod", "abilities"),
+                    Identifier.of(KnowledgeIsPowerMod.MOD_ID, "abilities"),
                     AbilityComponent.class
             );
 
-    private KIPModComponents() {}
+    @Override
+    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
+        // Register AbilityComponent for players, automatically copied on respawn
+        registry.registerForPlayers(
+                ABILITIES,
+                AbilityComponentImpl::new,
+                RespawnCopyStrategy.ALWAYS_COPY
+        );
+    }
 }
