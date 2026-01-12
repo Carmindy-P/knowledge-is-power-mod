@@ -6,6 +6,7 @@ public class ModAbilities {
     public static final FeatherFallingAbility FEATHERFALLING = new FeatherFallingAbility();
     public static final ChannelingAbility CHANNELING = new ChannelingAbility();
     public static final MendingAbility MENDING = new MendingAbility();
+    public static final CurseOfVanishingAbility CURSEOFVANISHING = new CurseOfVanishingAbility();
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -13,5 +14,6 @@ public class ModAbilities {
         AbilityRegistry.register(FEATHERFALLING.getId(), FEATHERFALLING);
         AbilityRegistry.register(CHANNELING.getId(), CHANNELING);
         AbilityRegistry.register(MENDING.getId(), MENDING);
+        AbilityRegistry.register(CURSEOFVANISHING.getId(), CURSEOFVANISHING);
     }
 }

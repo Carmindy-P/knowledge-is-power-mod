@@ -6,21 +6,20 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class EfficiencyAbility implements Abilities {
-
+public class CurseOfVanishingAbility implements Abilities{
     @Override
     public String getId() {
-        return "efficiency";
+        return "vanishing_curse";
     }
 
     @Override
     public String getName() {
-        return "Haste";
+        return "Invisibility";
     }
 
     @Override
     public String getDescription() {
-        return "10 s of Haste, Speed and netherite-level harvest.";
+        return "10s of Invisibility";
     }
 
     @Override
@@ -36,30 +35,19 @@ public class EfficiencyAbility implements Abilities {
     @Override
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
-
         player.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.HASTE,
-                10 * 20,
-                5000,
-                false, false, false));
-
-        player.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.SPEED,
+                StatusEffects.INVISIBILITY,
                 10 * 20,
                 0,
                 false, false, false));
+        if (!player.hasStatusEffect(StatusEffects.INVISIBILITY)) {
+            player.sendMessage(Text.literal("Invisibility!"), false);
+        }
 
-        player.sendMessage(Text.literal("Haste surge!"), false);
-
-
-        KIPModComponents.ABILITIES.get(player).setInstamine(true);
-    }
+}
 
     @Override
     public void tick(ServerPlayerEntity player) {
 
-        if (!player.hasStatusEffect(StatusEffects.HASTE)) {
-            KIPModComponents.ABILITIES.get(player).setInstamine(false);
-        }
     }
 }

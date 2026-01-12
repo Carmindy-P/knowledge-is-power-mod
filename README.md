@@ -7,14 +7,14 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 
 ## 🌟 Features
 
-| Power | Book | Effect | Cool-down |
-|-------|------|--------|-----------|
-| **Flame Burst** | Enchanted Book – Flame | Ignite the entity/block you’re looking at | 10 s |
-| **Haste** | Enchanted Book – Efficiency | 10 s of **Haste V**, **Speed** and instant-mining | 10 s |
-| **Flight** | Enchanted Book – Feather Falling | 15 s creative flight + 10 s slow-falling after expiry | 15 s |
-| **Lightning Strike** | Enchanted Book – Channeling | Call a lightning bolt on the target | 10 s |
-| **Mending** | Enchanted Book – Mending | Heals hearts using experience | Passive |
-
+| Power                  | Book | Effect                               | Cool-down |
+|------------------------|------|--------------------------------------|-----------|
+| **Flame Burst**        | Enchanted Book – Flame | Ignite what you’re looking at        | 10 s |
+| **Haste**              | Enchanted Book – Efficiency | Haste, Speed and instant-mining      | 10 s |
+| **Flight**             | Enchanted Book – Feather Falling | Flight                               | 15 s |
+| **Lightning Strike**   | Enchanted Book – Channeling | Call a lightning bolt where you look | 10 s |
+| **Mending**            | Enchanted Book – Mending | Heals hearts using experience        | Passive |
+| **Curse of Vanishing** | Enchanted Book – Curse of Vanishing| Invisibility | 10s|
 *More powers can be added by any mod or data-pack – the system is 100 % data-driven.*
 
 ---
