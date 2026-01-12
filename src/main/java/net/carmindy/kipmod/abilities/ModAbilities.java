@@ -7,6 +7,7 @@ public class ModAbilities {
     public static final ChannelingAbility CHANNELING = new ChannelingAbility();
     public static final MendingAbility MENDING = new MendingAbility();
     public static final CurseOfVanishingAbility CURSEOFVANISHING = new CurseOfVanishingAbility();
+    public static final UnbreakingAbility UNBREAKING = new UnbreakingAbility();
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -15,5 +16,6 @@ public class ModAbilities {
         AbilityRegistry.register(CHANNELING.getId(), CHANNELING);
         AbilityRegistry.register(MENDING.getId(), MENDING);
         AbilityRegistry.register(CURSEOFVANISHING.getId(), CURSEOFVANISHING);
+        AbilityRegistry.register(UNBREAKING.getId(), UNBREAKING);
     }
 }

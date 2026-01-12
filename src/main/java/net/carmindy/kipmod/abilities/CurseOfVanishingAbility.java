@@ -1,12 +1,14 @@
 package net.carmindy.kipmod.abilities;
 
-import net.carmindy.kipmod.data.KIPModComponents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class CurseOfVanishingAbility implements Abilities{
+public class CurseOfVanishingAbility implements Abilities {
+    private static final int INVISIBILITY_DURATION_TICKS = 20 * 5; // 5 seconds
+    private long activationTime = -1;
+
     @Override
     public String getId() {
         return "vanishing_curse";
@@ -19,7 +21,7 @@ public class CurseOfVanishingAbility implements Abilities{
 
     @Override
     public String getDescription() {
-        return "10s of Invisibility";
+        return "Invisibility";
     }
 
     @Override
@@ -35,19 +37,30 @@ public class CurseOfVanishingAbility implements Abilities{
     @Override
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
+
         player.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.INVISIBILITY,
-                10 * 20,
+                INVISIBILITY_DURATION_TICKS,
                 0,
                 false, false, false));
+
+        activationTime = player.getWorld().getTime();
+
         if (!player.hasStatusEffect(StatusEffects.INVISIBILITY)) {
             player.sendMessage(Text.literal("Invisibility!"), false);
         }
-
-}
+    }
 
     @Override
     public void tick(ServerPlayerEntity player) {
+        if (player.getWorld().isClient()) return;
 
+        if (activationTime != -1) {
+            long currentTime = player.getWorld().getTime();
+            if (currentTime - activationTime >= INVISIBILITY_DURATION_TICKS) {
+                player.removeStatusEffect(StatusEffects.INVISIBILITY);
+                activationTime = -1;
+            }
+        }
     }
 }

@@ -33,7 +33,8 @@ public class AbilityBookComponent {
             "minecraft:feather_falling", "feather_falling",
             "minecraft:channeling", "channeling",
             "minecraft:mending", "mending",
-            "minecraft:vanishing_curse", "vanishing_curse"
+            "minecraft:vanishing_curse", "vanishing_curse",
+            "minecraft:unbreaking", "unbreaking"
     );
 
     private Enchantment ability;

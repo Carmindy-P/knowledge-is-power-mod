@@ -15,7 +15,7 @@ public class EfficiencyAbility implements Abilities {
 
     @Override
     public String getName() {
-        return "Haste";
+        return "Instamine";
     }
 
     @Override
@@ -49,7 +49,7 @@ public class EfficiencyAbility implements Abilities {
                 0,
                 false, false, false));
 
-        player.sendMessage(Text.literal("Haste surge!"), false);
+        player.sendMessage(Text.literal("Instamine!"), false);
 
 
         KIPModComponents.ABILITIES.get(player).setInstamine(true);

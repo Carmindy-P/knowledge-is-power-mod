@@ -9,7 +9,6 @@ public final class AbilityRegistry {
 
     public static void register(String id, Abilities a) {
         REGISTRY.put(id, a);
-        System.out.println("[KipMod] registered ability: " + id);
     }
 
     public static @Nullable Abilities get(String id) {
