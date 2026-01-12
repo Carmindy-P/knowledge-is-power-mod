@@ -30,7 +30,7 @@ public class EfficiencyAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 20 * 10; // 10 seconds
+        return 20 * 10;
     }
 
     @Override

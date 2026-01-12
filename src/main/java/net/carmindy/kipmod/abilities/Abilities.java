@@ -16,6 +16,5 @@ public interface Abilities {
 
     /** Called when this ability is assigned to a player */
     default void onApply(ServerPlayerEntity player) {
-        // default: do nothing
     }
 }

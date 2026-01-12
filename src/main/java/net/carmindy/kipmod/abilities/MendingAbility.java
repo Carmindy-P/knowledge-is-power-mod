@@ -23,12 +23,10 @@ public class MendingAbility implements Abilities {
 
     @Override
     public void activate(ServerPlayerEntity player) {
-        // This ability does not need an activation method
     }
 
     @Override
     public void tick(ServerPlayerEntity player) {
-        // This ability will be handled in the player's component
     }
 
     @Override
@@ -38,6 +36,6 @@ public class MendingAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 0; // No cooldown for this ability
+        return 0;
     }
 }

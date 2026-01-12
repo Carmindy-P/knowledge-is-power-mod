@@ -34,7 +34,8 @@ public class AbilityBookComponent {
             "minecraft:channeling", "channeling",
             "minecraft:mending", "mending",
             "minecraft:vanishing_curse", "vanishing_curse",
-            "minecraft:unbreaking", "unbreaking"
+            "minecraft:unbreaking", "unbreaking",
+            "minecraft:protection", "protection"
     );
 
     private Enchantment ability;
