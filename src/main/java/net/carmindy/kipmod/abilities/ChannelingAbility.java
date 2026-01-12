@@ -86,6 +86,10 @@ public class ChannelingAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 20 * 10; // 10 seconds
+        return 20 * 10;
+    }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
     }
 }

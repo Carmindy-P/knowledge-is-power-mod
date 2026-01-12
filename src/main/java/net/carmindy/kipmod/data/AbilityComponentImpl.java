@@ -51,14 +51,18 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         player.sendMessage(Text.literal("Mending healed " + hearts + " ♥"), false);
     }
 
+    /* AbilityComponentImpl.java */
     @Override
     public void setAbility(@Nullable Abilities ability) {
+        if (this.learnedAbility != null && !player.getWorld().isClient()) {
+            this.learnedAbility.deactivate((ServerPlayerEntity) player);
+        }
         this.learnedAbility = ability;
+        this.cooldown = 0;          // optional: reset cooldown
         if (ability != null && !player.getWorld().isClient()) {
             ability.onApply((ServerPlayerEntity) player);
         }
     }
-
     @Override
     public int getCooldown() {
         return cooldown;

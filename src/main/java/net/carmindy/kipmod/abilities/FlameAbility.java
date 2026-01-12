@@ -92,4 +92,8 @@ public class FlameAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() { return 20 * 10; }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+    }
 }

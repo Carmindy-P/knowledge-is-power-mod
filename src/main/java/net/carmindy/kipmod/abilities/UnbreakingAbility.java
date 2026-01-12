@@ -63,4 +63,9 @@ public final class UnbreakingAbility implements Abilities {
             return true;
         });
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        expiryTick.remove(player.getUuid());
+    }
 }

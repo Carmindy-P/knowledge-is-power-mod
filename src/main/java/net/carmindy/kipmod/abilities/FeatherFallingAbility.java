@@ -83,4 +83,13 @@ public class FeatherFallingAbility implements Abilities {
     public int getCooldownTicks() {
         return 20 * 15;
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        PlayerAbilities abilities = player.getAbilities();
+        abilities.allowFlying = false;
+        abilities.flying = false;
+        player.networkHandler.sendPacket(new PlayerAbilitiesS2CPacket(abilities));
+        activationTime = -1;
+    }
 }

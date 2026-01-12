@@ -62,4 +62,11 @@ public class EfficiencyAbility implements Abilities {
             KIPModComponents.ABILITIES.get(player).setInstamine(false);
         }
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        player.removeStatusEffect(StatusEffects.HASTE);
+        player.removeStatusEffect(StatusEffects.SPEED);
+        KIPModComponents.ABILITIES.get(player).setInstamine(false);
+    }
 }

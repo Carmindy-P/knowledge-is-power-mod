@@ -38,4 +38,8 @@ public class MendingAbility implements Abilities {
     public int getCooldownTicks() {
         return 0;
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+    }
 }

@@ -63,4 +63,10 @@ public class CurseOfVanishingAbility implements Abilities {
             }
         }
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        player.removeStatusEffect(StatusEffects.INVISIBILITY);
+        activationTime = -1;
+    }
 }

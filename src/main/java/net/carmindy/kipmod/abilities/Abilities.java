@@ -13,8 +13,7 @@ public interface Abilities {
 
     boolean isOneTimeUse();
     int getCooldownTicks();
-
-    /** Called when this ability is assigned to a player */
+    default void deactivate(ServerPlayerEntity player) { }
     default void onApply(ServerPlayerEntity player) {
     }
 }

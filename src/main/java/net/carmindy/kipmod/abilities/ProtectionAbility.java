@@ -62,4 +62,10 @@ public class ProtectionAbility implements  Abilities{
     public void tick(ServerPlayerEntity player) {
 
     }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        // remove only the regeneration we gave
+        player.removeStatusEffect(StatusEffects.REGENERATION);
+    }
 }
