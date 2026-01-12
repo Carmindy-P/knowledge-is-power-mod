@@ -1,4 +1,4 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;

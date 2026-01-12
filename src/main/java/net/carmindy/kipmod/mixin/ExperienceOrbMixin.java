@@ -1,6 +1,6 @@
 package net.carmindy.kipmod.mixin;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

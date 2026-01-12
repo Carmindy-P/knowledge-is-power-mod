@@ -1,4 +1,4 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import net.carmindy.kipmod.KnowledgeIsPowerMod;
 import org.ladysnake.cca.api.v3.component.ComponentKey;

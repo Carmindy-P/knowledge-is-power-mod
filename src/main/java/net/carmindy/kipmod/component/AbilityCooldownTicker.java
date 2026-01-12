@@ -1,4 +1,4 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 

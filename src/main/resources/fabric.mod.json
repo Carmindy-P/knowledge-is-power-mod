@@ -22,16 +22,16 @@
       "net.carmindy.kipmod.KnowledgeIsPowerMod"
     ],
     "cca": [
-      "net.carmindy.kipmod.data.KIPModComponents"
+      "net.carmindy.kipmod.component.KIPModComponents"
     ],
     "fabric-datagen": [
-      "net.carmindy.kipmod.data.KnowledgeIsPowerModDataGenerator"
+      "net.carmindy.kipmod.component.KnowledgeIsPowerModDataGenerator"
     ],
     "client": [
       "net.carmindy.kipmod.KIPModClient"
     ],
     "cardinal-components-entity": [
-      "net.carmindy.kipmod.data.KIPModComponents"
+      "net.carmindy.kipmod.component.KIPModComponents"
     ]
   },
   "mixins": [
@@ -44,7 +44,7 @@
     "fabric-api": "*"
   },
   "cardinal-components-entity": [
-    "net.carmindy.kipmod.data.KIPModComponents"
+    "net.carmindy.kipmod.component.KIPModComponents"
   ],
   "suggests": {
     "another-mod": "*"

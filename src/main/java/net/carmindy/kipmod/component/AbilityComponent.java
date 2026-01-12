@@ -1,4 +1,4 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import net.carmindy.kipmod.abilities.Abilities;
 import org.jetbrains.annotations.Nullable;

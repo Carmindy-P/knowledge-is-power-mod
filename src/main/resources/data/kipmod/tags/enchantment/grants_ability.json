@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:mending",
+    "minecraft:unbreaking",
+    "minecraft:vanishing_curse",
+    "minecraft:protection",
+    "minecraft:efficiency",
+    "minecraft:feather_falling",
+    "minecraft:channeling",
+    "minecraft:flame"
+  ]
+}

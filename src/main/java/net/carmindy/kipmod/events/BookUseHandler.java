@@ -2,14 +2,12 @@ package net.carmindy.kipmod.events;
 
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.AbilityRegistry;
-import net.carmindy.kipmod.data.AbilityBookComponent;
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.AbilityBookComponent;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 public class BookUseHandler {

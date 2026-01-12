@@ -1,8 +1,7 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import net.carmindy.kipmod.abilities.Abilities;
 import net.carmindy.kipmod.abilities.MendingAbility;
-import net.carmindy.kipmod.data.AbilityComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;

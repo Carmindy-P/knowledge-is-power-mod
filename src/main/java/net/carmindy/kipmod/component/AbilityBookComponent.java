@@ -1,8 +1,7 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -12,13 +11,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.registry.RegistryWrapper;
+
 
 import java.util.Map;
 
@@ -26,6 +22,7 @@ public class AbilityBookComponent {
 
     private static final String NBT_KEY = "Ability";
     public static final String STORED_ENCHANTMENTS_KEY = "StoredEnchantments";
+    private static final TagKey<Enchantment> GRANTS_ABILITY_TAG = TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_ability"));
 
     private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
             "minecraft:flame", "flame",
@@ -55,46 +52,20 @@ public class AbilityBookComponent {
     }
 
 
-    @Nullable
     public static String getAbility(ItemStack stack) {
+        if (!(stack.getItem() instanceof EnchantedBookItem)) return null;
 
-        if (!stack.isEmpty() && stack.getItem() instanceof EnchantedBookItem) {
-            var enchants = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
-            if (enchants != null && !enchants.isEmpty()) {
-                for (var entry : enchants.getEnchantmentEntries()) {
-                    String id = entry.getKey().getKey().get().getValue().toString();
-
-                    TagKey<Enchantment> flameTag =
-                            TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_flame_ability"));
-                    if (entry.getKey().isIn(flameTag)) return "flame";
-
-                    TagKey<Enchantment> efficiencyTag =
-                            TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_efficiency_ability"));
-                    if (entry.getKey().isIn(efficiencyTag)) return "efficiency";
-
-                    TagKey<Enchantment> channelingTag =
-                            TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_channeling_ability"));
-                    if (entry.getKey().isIn(channelingTag)) return "channeling";
-
-                    TagKey<Enchantment> featherTag =
-                            TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_feather_falling_ability"));
-                    if (entry.getKey().isIn(featherTag)) return "feather_falling";
-
-                    TagKey<Enchantment> mendingTag =
-                            TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_mending_ability"));
-                    if (entry.getKey().isIn(mendingTag)) return "mending";
-
-                    /* ---- fallback hard map ---- */
-                    String mapped = ENCHANT_TO_ABILITY.get(id);
-                    if (mapped != null && AbilityRegistry.get(mapped) != null) return mapped;
+        var stored = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (stored != null) {
+            for (var entry : stored.getEnchantmentEntries()) {
+                if (entry.getKey().isIn(GRANTS_ABILITY_TAG)) {
+                    String enchantId = entry.getKey().getKey().get().getValue().toString();
+                    int colon = enchantId.indexOf(':');
+                    String abilityId = colon == -1 ? enchantId : enchantId.substring(colon + 1);
+                    if (AbilityRegistry.get(abilityId) != null) return abilityId;
                 }
             }
         }
-
-        // custom books
-        NbtCompound tag = readNbt(stack);
-        if (tag != null && tag.contains("Ability")) return tag.getString("Ability");
-
         return null;
     }
 

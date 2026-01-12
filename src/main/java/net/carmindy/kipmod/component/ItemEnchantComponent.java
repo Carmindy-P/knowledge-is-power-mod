@@ -1,4 +1,4 @@
-package net.carmindy.kipmod.data;
+package net.carmindy.kipmod.component;
 
 import java.util.Collections;
 import java.util.HashMap;

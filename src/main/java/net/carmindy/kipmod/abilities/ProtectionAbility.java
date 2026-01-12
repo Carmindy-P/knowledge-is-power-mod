@@ -1,6 +1,5 @@
 package net.carmindy.kipmod.abilities;
 
-import net.carmindy.kipmod.data.KIPModComponents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;

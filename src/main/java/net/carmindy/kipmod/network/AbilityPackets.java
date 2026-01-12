@@ -1,6 +1,6 @@
 package net.carmindy.kipmod.network;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class AbilityPackets {

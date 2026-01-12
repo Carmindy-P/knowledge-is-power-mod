@@ -1,6 +1,6 @@
 package net.carmindy.kipmod;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
