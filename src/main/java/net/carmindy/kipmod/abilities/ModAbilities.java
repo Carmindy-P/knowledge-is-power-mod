@@ -9,6 +9,7 @@ public class ModAbilities {
     public static final CurseOfVanishingAbility CURSEOFVANISHING = new CurseOfVanishingAbility();
     public static final UnbreakingAbility UNBREAKING = new UnbreakingAbility();
     public static final ProtectionAbility PROTECTION = new ProtectionAbility();
+    public static final BlastProtectionAbility BLASTPROTECTION = new BlastProtectionAbility();
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -19,5 +20,6 @@ public class ModAbilities {
         AbilityRegistry.register(CURSEOFVANISHING.getId(), CURSEOFVANISHING);
         AbilityRegistry.register(UNBREAKING.getId(), UNBREAKING);
         AbilityRegistry.register(PROTECTION.getId(), PROTECTION);
+        AbilityRegistry.register(BLASTPROTECTION.getId(), BLASTPROTECTION);
     }
 }

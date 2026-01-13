@@ -146,6 +146,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         AbilityTickHandler.register();
         AbilityRegistry.register();
         UnbreakingAbility.registerEvents();
+        BlastProtectionAbility.registerEvents();
         EffBreakHandler.register();
         registerPackets();
         registerDebugCommands();

@@ -8,6 +8,7 @@
     "minecraft:efficiency",
     "minecraft:feather_falling",
     "minecraft:channeling",
-    "minecraft:flame"
+    "minecraft:flame",
+    "minecraft:blast_protection"
   ]
 }

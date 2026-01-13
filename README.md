@@ -7,16 +7,17 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 
 ## 🌟 Features
 
-| Power                  | Book                                | Effect                               | Cool-down |
-|------------------------|-------------------------------------|--------------------------------------|-----------|
-| **Flame Burst**        | Enchanted Book – Flame              | Ignite what you’re looking at        | 10 s      |
-| **Instamine**          | Enchanted Book – Efficiency         | Haste, speed and instant-mining      | 10 s      |
-| **Flight**             | Enchanted Book – Feather Falling    | Flight                               | 15 s      |
-| **Lightning Strike**   | Enchanted Book – Channeling         | Call a lightning bolt where you look | 10 s      |
-| **Healing**            | Enchanted Book – Mending            | Heals hearts using experience        | Passive   |
-| **Invisibility**       | Enchanted Book – Curse of Vanishing | Invisibility                         | 10s       |
-| **Immutability**       | Enchanted Book - Unbreaking         | You become immutable briefly         | 5s        |
-| **Regeneration Field** | Enchanted Book - Protection         | Create an AOE of regeneration        | 10s       |
+| Power                  | Book                                | Effect                                           | Cool-down |
+|------------------------|-------------------------------------|--------------------------------------------------|-----------|
+| **Flame Burst**        | Enchanted Book – Flame              | Ignite what you’re looking at                    | 10 s      |
+| **Instamine**          | Enchanted Book – Efficiency         | Haste, speed and instant-mining                  | 10 s      |
+| **Flight**             | Enchanted Book – Feather Falling    | Flight                                           | 15 s      |
+| **Lightning Strike**   | Enchanted Book – Channeling         | Call a lightning bolt where you look             | 10 s      |
+| **Healing**            | Enchanted Book – Mending            | Heals hearts using experience                    | Passive   |
+| **Invisibility**       | Enchanted Book – Curse of Vanishing | Invisibility                                     | 10s       |
+| **Immutability**       | Enchanted Book - Unbreaking         | You become immutable briefly                     | 5s        |
+| **Regeneration Field** | Enchanted Book - Protection         | Create an AOE of regeneration                    | 10s       |
+| **Blast Protection**   | Enchanted Book - Blast Protection   | For a certain amount of times, blasts don't hurt | X times   |
 
 *More powers can be added by any mod or data-pack – the system is 100 % data-driven.*
 
@@ -81,8 +82,67 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 ```java
 AbilityRegistry.register("void_blink", new VoidBlinkAbility());
 ```
-Map it to an enchantment (tag or fallback map) → players can now learn it like any other book.
+### Adding a custom ability
 
+1. Create the settings file  
+   `data/<yourmod>/ability_settings/<ability_name>.json`
+
+   ```json
+   {
+     "id": "custom_ability",
+     "durationTicks": 200,
+     "cooldownTicks": 300,
+     "range": 10.0,
+     "fireSeconds": 4,
+     "heartsPerOrb": 0.1,
+     "orbDivisor": 10,
+     "radius": 10,
+     "times": 3
+   }
+   ```
+Map it to an enchantment
+Use the tag system (#yourmod:ability/custom_ability) or
+Register a fallback mapping in your mod code.
+# KIP Abilities – Developer README
+
+## Advanced Features (Devs)
+
+### Ability Settings
+Every JSON file placed in `data/&lt;modid&gt;/ability_settings/` is loaded automatically.  
+Supported keys and their meanings:
+
+| JSON key        | Meaning |
+|----------------|---------|
+| `durationTicks` | Effect duration in ticks (20 tps) |
+| `cooldownTicks` | Cool-down length in ticks |
+| `range`         | Ray-cast range for targeted abilities |
+| `fireSeconds`   | Fire duration in seconds |
+| `heartsPerOrb`  | Health restored per XP orb (Mending) |
+| `orbDivisor`    | XP value divisor (Mending) |
+| `radius`        | AOE radius (Protection) |
+| `times`         | Number of procs (Blast Protection) |
+
+No additional registration code is required.
+
+### Cardinal Components API Quick-start
+```java
+// get the player's current ability
+Abilities ability = KIPModComponents.ABILITIES.get(player).getAbility();
+
+// check cool-down
+int cooldown = KIPModComponents.ABILITIES.get(player).getCooldown();
+
+// attempt to fire the ability
+boolean success = KIPModComponents.ABILITIES.get(player).tryUseAbility();
+```
+### Register Custom Events
+Drop this in your mod initializer:
+
+```java
+// For damage blocking, XP collection, etc.
+UnbreakingAbility.registerEvents();
+BlastProtectionAbility.registerEvents();
+```
 ---
 
 ## 📦 Installation
@@ -105,4 +165,4 @@ Map it to an enchantment (tag or fallback map) → players can now learn it like
 
 ## 📄 License
 **MIT** – do whatever you want, just give credit.  
-Made with Fabric by **Carmindy**
+Made with Fabric by **Carmindy Creates**
