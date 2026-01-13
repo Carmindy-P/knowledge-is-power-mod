@@ -24,17 +24,6 @@ public class AbilityBookComponent {
     public static final String STORED_ENCHANTMENTS_KEY = "StoredEnchantments";
     private static final TagKey<Enchantment> GRANTS_ABILITY_TAG = TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("kipmod","grants_ability"));
 
-    private static final Map<String, String> ENCHANT_TO_ABILITY = Map.of(
-            "minecraft:flame", "flame",
-            "minecraft:efficiency", "efficiency",
-            "minecraft:feather_falling", "feather_falling",
-            "minecraft:channeling", "channeling",
-            "minecraft:mending", "mending",
-            "minecraft:vanishing_curse", "vanishing_curse",
-            "minecraft:unbreaking", "unbreaking",
-            "minecraft:protection", "protection"
-    );
-
     private Enchantment ability;
 
     public void setAbility(Enchantment ench) {
@@ -79,14 +68,6 @@ public class AbilityBookComponent {
     @Nullable
     private static String getAbilityFromEnchants(ItemStack stack) {
         ItemEnchantmentsComponent comp = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
-        if (comp != null && !comp.isEmpty()) {
-            for (var entry : comp.getEnchantmentEntries()) {
-                String id = entry.getKey().getKey().get().getValue().toString();
-                String mapped = ENCHANT_TO_ABILITY.get(id);
-                if (mapped != null && AbilityRegistry.get(mapped) != null) return mapped;
-                if (AbilityRegistry.get(id)      != null) return id;
-            }
-        }
         NbtCompound tag = readNbt(stack);
         if (tag == null) return null;
 
@@ -106,9 +87,6 @@ public class AbilityBookComponent {
             if (enchantments.contains("levels")) {
                 NbtCompound levels = enchantments.getCompound("levels");
                 for (String enchantId : levels.getKeys()) {
-                    String mapped = ENCHANT_TO_ABILITY.get(enchantId);
-                    if (mapped != null && AbilityRegistry.get(mapped) != null)
-                        return mapped;
                     if (AbilityRegistry.get(enchantId) != null)
                         return enchantId;
                 }
@@ -126,22 +104,6 @@ public class AbilityBookComponent {
             String enchantId = ench.getString("id");
             if (enchantId == null || enchantId.isEmpty()) continue;
 
-            String mapped = ENCHANT_TO_ABILITY.get(enchantId);
-            if (mapped != null && AbilityRegistry.get(mapped) != null)
-                return mapped;
-
-            if (AbilityRegistry.get(enchantId) != null)
-                return enchantId;
-
-            int colon = enchantId.indexOf(':');
-            if (colon != -1) {
-                String stripped = enchantId.substring(colon + 1);
-                mapped = ENCHANT_TO_ABILITY.get(stripped);
-                if (mapped != null && AbilityRegistry.get(mapped) != null)
-                    return mapped;
-                if (AbilityRegistry.get(stripped) != null)
-                    return stripped;
-            }
         }
         return null;
     }

@@ -1,8 +1,6 @@
 package net.carmindy.kipmod;
 
-import net.carmindy.kipmod.abilities.Abilities;
-import net.carmindy.kipmod.abilities.AbilityRegistry;
-import net.carmindy.kipmod.abilities.ModAbilities;
+import net.carmindy.kipmod.abilities.*;
 import net.carmindy.kipmod.config.KIPModAutoConfig;
 import net.carmindy.kipmod.component.AbilityBookComponent;
 import net.carmindy.kipmod.component.AbilityComponent;
@@ -14,12 +12,17 @@ import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.carmindy.kipmod.network.TryAbilityBookPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -95,7 +98,9 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
                     Abilities ability = AbilityRegistry.get(abilityId);
                     if (ability != null) {
-                        KIPModComponents.ABILITIES.get(player).setAbility(ability);
+                        KIPModComponents.ABILITIES.maybeGet(player).ifPresent(comp ->
+                                comp.setAbility(ability)
+                        );
                         player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
                     }
                 })
@@ -109,15 +114,9 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
-                (payload, ctx) -> ctx.server().execute(() -> {
-                    var comp = KIPModComponents.ABILITIES.maybeGet(ctx.player());
-                    if (comp == null) {
-                        ctx.player().sendMessage(Text.literal("Error: Abilities component not found!"), false);
-                        return;
-                    }
-                    comp.get().tryUseAbility();
-
-                })
+                (payload, ctx) -> ctx.server().execute(() ->
+                        KIPModComponents.ABILITIES.maybeGet(ctx.player())
+                                .ifPresent(AbilityComponent::tryUseAbility))
         );
     }
 
@@ -128,10 +127,25 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                 Identifier.of(MOD_ID, "abilities"),
                 AbilityComponent.class
         );
+        ServerLifecycleEvents.SERVER_STARTED.register(server ->
+                AbilityRegistry.reload(server.getResourceManager()));
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA)
+                .registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+                    @Override
+                    public Identifier getFabricId() {
+                        return Identifier.of("kipmod", "ability_settings");
+                    }
+                    @Override
+                    public void reload(ResourceManager manager) {
+                        AbilityRegistry.reload(manager);
+                    }
+                });
         KIPModAutoConfig.init();
         ModAbilities.register();
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
+        AbilityRegistry.register();
+        UnbreakingAbility.registerEvents();
         EffBreakHandler.register();
         registerPackets();
         registerDebugCommands();

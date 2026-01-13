@@ -50,6 +50,14 @@
     "another-mod": "*"
   },
   "custom": {
+    "fabric-resource-loader:load_resources": true,
+    "fabric-resource-loader:data_packs": [
+      {
+        "id": "knowledge-is-power-mod",
+        "path": "data",
+        "automatic": true
+      }
+    ],
     "cardinal-components": [
       "knowledge-is-power-mod:abilities"
     ]

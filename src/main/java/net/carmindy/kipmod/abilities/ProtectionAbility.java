@@ -33,28 +33,32 @@ public class ProtectionAbility implements  Abilities{
     }
 
     @Override
-    public int getCooldownTicks() {
-        return 20 * 10;
-    }
-
-    @Override
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
 
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        int duration = cfg.durationTicks();
+        int radius   = cfg.radius();
+
         ServerWorld world = player.getServerWorld();
-        Box box = Box.of(player.getPos(), RADIUS, RADIUS, RADIUS);
+        Box box = Box.of(player.getPos(), radius, radius, radius);
 
         for (PlayerEntity target : world.getPlayers()) {
-            if (target.squaredDistanceTo(player) <= RADIUS * RADIUS) {
+            if (target.squaredDistanceTo(player) <= radius * radius) {
                 target.addStatusEffect(new StatusEffectInstance(
                         StatusEffects.REGENERATION,
-                        REGENERATION_DURATION_TICKS,
+                        duration,
                         1,
-                        false,true,false
+                        false, true, false
                 ));
             }
         }
         player.sendMessage(Text.literal("Regeneration field activated!"), false);
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override

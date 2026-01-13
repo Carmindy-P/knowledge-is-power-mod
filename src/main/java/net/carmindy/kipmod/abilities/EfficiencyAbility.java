@@ -29,30 +29,31 @@ public class EfficiencyAbility implements Abilities {
     }
 
     @Override
-    public int getCooldownTicks() {
-        return 20 * 10;
-    }
-
-    @Override
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
 
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        int duration = cfg.durationTicks();
+
         player.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.HASTE,
-                10 * 20,
+                duration,
                 5000,
                 false, false, false));
 
         player.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.SPEED,
-                10 * 20,
+                duration,
                 0,
                 false, false, false));
 
         player.sendMessage(Text.literal("Instamine!"), false);
-
-
         KIPModComponents.ABILITIES.get(player).setInstamine(true);
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override

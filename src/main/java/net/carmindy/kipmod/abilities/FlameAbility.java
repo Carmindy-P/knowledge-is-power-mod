@@ -2,6 +2,7 @@ package net.carmindy.kipmod.abilities;
 
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.entity.Entity;
@@ -29,11 +30,13 @@ public class FlameAbility implements Abilities {
     public void activate(ServerPlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld)) return;
 
-        double range = 10.0;
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        double range   = cfg.range();
+        int fireSec    = cfg.fireSeconds();
 
         Vec3d start = player.getCameraPosVec(1.0F);
-        Vec3d rot = player.getRotationVec(1.0F);
-        Vec3d end = start.add(rot.multiply(range));
+        Vec3d rot   = player.getRotationVec(1.0F);
+        Vec3d end   = start.add(rot.multiply(range));
 
         EntityHitResult ehr = ProjectileUtil.raycast(
                 player, start, end,
@@ -43,31 +46,32 @@ public class FlameAbility implements Abilities {
 
         if (ehr != null) {
             Entity target = ehr.getEntity();
-            if (target instanceof ServerPlayerEntity) {
-                ((ServerPlayerEntity) target).sendMessage(Text.literal("You have been ignited by Flame Burst!"), false);
-            }
-            target.setOnFireFor(4);
+            if (target instanceof ServerPlayerEntity)
+                ((ServerPlayerEntity) target).sendMessage(
+                        Text.literal("You have been ignited by Flame Burst!"), false);
+            target.setOnFireFor(fireSec);
             player.sendMessage(Text.literal("Flame Burst!"), false);
-            spawnFlameParticles((ServerWorld) player.getWorld(), target.getX(), target.getY() + 1, target.getZ());
+            spawnFlameParticles((ServerWorld) player.getWorld(),
+                    target.getX(), target.getY() + 1, target.getZ());
         } else {
             var hit = player.raycast(range, 0, true);
-            if (hit instanceof net.minecraft.util.hit.BlockHitResult bhr &&
-                    hit.getType() != HitResult.Type.MISS) {
+            if (hit instanceof BlockHitResult bhr
+                    && hit.getType() != HitResult.Type.MISS) {
 
-                Vec3d hitPos = new Vec3d(bhr.getBlockPos().getX() + 0.5, bhr.getBlockPos().getY() + 0.5, bhr.getBlockPos().getZ() + 0.5);
-                double distanceToPlayer = start.distanceTo(hitPos);
+                Vec3d hitPos = Vec3d.ofCenter(bhr.getBlockPos());
+                double dist  = start.distanceTo(hitPos);
+                double vert  = Math.abs(start.y - hitPos.y);
 
-                double verticalDistance = Math.abs(start.y - hitPos.y);
-
-                if (distanceToPlayer > 1.5 && verticalDistance > 1.0) {
-                    ServerWorld w = (ServerWorld) player.getWorld();
-                    w.setBlockState(bhr.getBlockPos().offset(bhr.getSide()),
-                            net.minecraft.block.Blocks.FIRE.getDefaultState());
+                if (dist > 1.5 && vert > 1.0) {
+                    ((ServerWorld) player.getWorld())
+                            .setBlockState(bhr.getBlockPos().offset(bhr.getSide()),
+                                    net.minecraft.block.Blocks.FIRE.getDefaultState());
                     player.sendMessage(Text.literal("Flame Burst!"), false);
                     spawnFlameParticles((ServerWorld) player.getWorld(),
                             player.getX(), player.getY() + 1, player.getZ());
                 } else {
-                    player.sendMessage(Text.literal("Target is too close or directly beneath you."), false);
+                    player.sendMessage(
+                            Text.literal("Target is too close or directly beneath you."), false);
                 }
             } else {
                 player.sendMessage(Text.literal("No target in range."), false);
@@ -91,7 +95,9 @@ public class FlameAbility implements Abilities {
     public boolean isOneTimeUse() { return false; }
 
     @Override
-    public int getCooldownTicks() { return 20 * 10; }
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
+    }
 
     @Override
     public void deactivate(ServerPlayerEntity player) {

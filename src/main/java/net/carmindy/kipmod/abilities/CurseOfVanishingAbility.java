@@ -6,7 +6,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class CurseOfVanishingAbility implements Abilities {
-    private static final int INVISIBILITY_DURATION_TICKS = 20 * 5; // 5 seconds
+    private int getDuration() {
+        return AbilityRegistry.settings(getId()).durationTicks();
+    }
+
     private long activationTime = -1;
 
     @Override
@@ -30,25 +33,21 @@ public class CurseOfVanishingAbility implements Abilities {
     }
 
     @Override
-    public int getCooldownTicks() {
-        return 20 * 10; // 10 seconds
+    public void activate(ServerPlayerEntity player) {
+        if (player.getWorld().isClient()) return;
+        int duration = getDuration();
+        player.addStatusEffect(new StatusEffectInstance(
+                StatusEffects.INVISIBILITY,
+                duration,
+                0, false, false, false));
+        activationTime = player.getWorld().getTime();
+        if (!player.hasStatusEffect(StatusEffects.INVISIBILITY))
+            player.sendMessage(Text.literal("Invisibility!"), false);
     }
 
     @Override
-    public void activate(ServerPlayerEntity player) {
-        if (player.getWorld().isClient()) return;
-
-        player.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.INVISIBILITY,
-                INVISIBILITY_DURATION_TICKS,
-                0,
-                false, false, false));
-
-        activationTime = player.getWorld().getTime();
-
-        if (!player.hasStatusEffect(StatusEffects.INVISIBILITY)) {
-            player.sendMessage(Text.literal("Invisibility!"), false);
-        }
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override
@@ -57,7 +56,7 @@ public class CurseOfVanishingAbility implements Abilities {
 
         if (activationTime != -1) {
             long currentTime = player.getWorld().getTime();
-            if (currentTime - activationTime >= INVISIBILITY_DURATION_TICKS) {
+            if (currentTime - activationTime >= getDuration()) {
                 player.removeStatusEffect(StatusEffects.INVISIBILITY);
                 activationTime = -1;
             }

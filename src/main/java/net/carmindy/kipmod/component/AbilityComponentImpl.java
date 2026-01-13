@@ -41,13 +41,8 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
     @Override
     public void onXpGain(int orbValue) {
         if (player.getWorld().isClient()) return;
-        if (!(learnedAbility instanceof MendingAbility)) return;
-
-        int hearts = orbValue / 10;
-        if (hearts <= 0) return;
-
-        player.heal(hearts * 2);
-        player.sendMessage(Text.literal("Mending healed " + hearts + " ♥"), false);
+        if (learnedAbility instanceof MendingAbility m)
+            m.onXpGain((ServerPlayerEntity) player, orbValue);
     }
 
     /* AbilityComponentImpl.java */

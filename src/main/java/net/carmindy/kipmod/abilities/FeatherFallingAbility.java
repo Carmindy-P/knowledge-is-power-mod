@@ -8,7 +8,9 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 
 public class FeatherFallingAbility implements Abilities {
-    private static final int FLIGHT_DURATION_TICKS = 20 * 15;
+    private int getDuration() {
+        return AbilityRegistry.settings(getId()).durationTicks();
+    }
     private long activationTime = -1;
 
     @Override
@@ -47,7 +49,7 @@ public class FeatherFallingAbility implements Abilities {
 
         if (activationTime != -1) {
             long currentTime = player.getWorld().getTime();
-            if (currentTime - activationTime < FLIGHT_DURATION_TICKS) {
+            if (currentTime - activationTime < getDuration()) {
 
                 PlayerAbilities abilities = player.getAbilities();
                 abilities.allowFlying = true;
@@ -81,7 +83,7 @@ public class FeatherFallingAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 20 * 15;
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override

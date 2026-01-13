@@ -2,6 +2,7 @@ package net.carmindy.kipmod.abilities;
 
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.entity.Entity;
@@ -33,11 +34,13 @@ public class ChannelingAbility implements Abilities {
     public void activate(ServerPlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld)) return;
 
-        double range = 10.0;
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        double range = cfg.range();
+        int fireSec = cfg.fireSeconds();
 
         Vec3d start = player.getCameraPosVec(1.0F);
-        Vec3d rot = player.getRotationVec(1.0F);
-        Vec3d end = start.add(rot.multiply(range));
+        Vec3d rot   = player.getRotationVec(1.0F);
+        Vec3d end   = start.add(rot.multiply(range));
 
         EntityHitResult ehr = ProjectileUtil.raycast(
                 player, start, end,
@@ -47,16 +50,14 @@ public class ChannelingAbility implements Abilities {
 
         if (ehr != null) {
             Entity target = ehr.getEntity();
-            if (target instanceof ServerPlayerEntity) {
+            if (target instanceof ServerPlayerEntity)
                 ((ServerPlayerEntity) target).sendMessage(Text.literal("You have been struck by lightning!"), false);
-            }
-            target.setOnFireFor(4);
+            target.setOnFireFor(fireSec);
             player.sendMessage(Text.literal("Lightning Strike!"), false);
             strikeLightning((ServerWorld) player.getWorld(), ehr.getPos());
         } else {
             var hit = player.raycast(range, 0, true);
-            if (hit instanceof net.minecraft.util.hit.BlockHitResult bhr &&
-                    hit.getType() != HitResult.Type.MISS) {
+            if (hit instanceof BlockHitResult bhr && hit.getType() != HitResult.Type.MISS) {
                 strikeLightning((ServerWorld) player.getWorld(), bhr.getPos());
                 player.sendMessage(Text.literal("Lightning Strike!"), false);
             } else {
@@ -86,7 +87,7 @@ public class ChannelingAbility implements Abilities {
 
     @Override
     public int getCooldownTicks() {
-        return 20 * 10;
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override
