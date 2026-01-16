@@ -44,7 +44,7 @@
     "fabric-api": "*"
   },
   "cardinal-components-entity": [
-    "net.carmindy.kipmod.component.KIPModComponents"
+    "net.carmindy.kipmod.component.KIPEntityComponents"
   ],
   "suggests": {
     "another-mod": "*"

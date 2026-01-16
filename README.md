@@ -108,19 +108,19 @@ Register a fallback mapping in your mod code.
 ## Advanced Features (Devs)
 
 ### Ability Settings
-Every JSON file placed in `data/&lt;modid&gt;/ability_settings/` is loaded automatically.  
+Every JSON file placed in `data/kipmod/ability_settings/` is loaded automatically.  
 Supported keys and their meanings:
 
 | JSON key        | Meaning |
 |----------------|---------|
-| `durationTicks` | Effect duration in ticks (20 tps) |
+| `durationTicks` | Effect duration in ticks|
 | `cooldownTicks` | Cool-down length in ticks |
 | `range`         | Ray-cast range for targeted abilities |
 | `fireSeconds`   | Fire duration in seconds |
-| `heartsPerOrb`  | Health restored per XP orb (Mending) |
-| `orbDivisor`    | XP value divisor (Mending) |
-| `radius`        | AOE radius (Protection) |
-| `times`         | Number of procs (Blast Protection) |
+| `heartsPerOrb`  | Health restored per XP orb |
+| `orbDivisor`    | XP value divisor |
+| `radius`        | AOE radius  |
+| `times`         | Number of procs  |
 
 No additional registration code is required.
 
