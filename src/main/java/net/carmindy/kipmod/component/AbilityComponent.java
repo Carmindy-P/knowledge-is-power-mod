@@ -20,6 +20,9 @@ public interface AbilityComponent extends Component {
 
     boolean tryUseAbility();
 
+    int getCharges();
+    void setCharges(int charges);
+
     void setInstamine(boolean value); // Set the instamine flag
     boolean isInstamine(); // Check if instamine is active
 }

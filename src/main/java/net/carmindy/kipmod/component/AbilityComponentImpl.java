@@ -90,6 +90,11 @@ public class AbilityComponentImpl implements AbilityComponent, AutoSyncedCompone
         return true;
     }
 
+    private int charges = 0;
+
+    @Override public int getCharges() { return charges; }
+    @Override public void setCharges(int charges) { this.charges = charges; }
+
     @Override
     public void setInstamine(boolean value) {
         this.instamine = value;
