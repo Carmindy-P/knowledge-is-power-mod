@@ -1,1 +1,5 @@
-{ "id": "mending", "heartsPerOrb": 0.1, "orbDivisor": 10 }
+{
+  "id": "mending",
+  "heartsPerOrb": 0.5,
+  "orbDivisor": 1
+}

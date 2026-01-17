@@ -23,7 +23,6 @@ public class MendingAbility implements Abilities {
         int hearts = orbValue / cfg.orbDivisor();
         if (hearts <= 0) return;
         player.heal((float)(hearts * cfg.heartsPerOrb() * 2));
-        player.sendMessage(Text.literal("Mending healed " + hearts + " ♥"), false);
     }
 
     @Override public void deactivate(ServerPlayerEntity player) { }

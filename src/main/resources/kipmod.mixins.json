@@ -4,6 +4,6 @@
   "package": "net.carmindy.kipmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-      "ExperienceOrbMixin",
+       "ServerPlayerEntityMixin"
     ]
 }

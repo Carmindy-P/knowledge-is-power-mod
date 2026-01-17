@@ -12,9 +12,11 @@ public final class AbilityRegistry {
     private static final Map<String, AbilitySettings> SETTINGS = new HashMap<>();
 
     public static void reload(ResourceManager mgr) {
-
+        SETTINGS.clear();
+        for (String abilityId : ABILITIES.keySet()) {
+            SETTINGS.put(abilityId, AbilitySettings.load(abilityId, mgr));
+        }
     }
-
     public static AbilitySettings settings(String id) {
         return SETTINGS.getOrDefault(id, AbilitySettings.DEFAULT);
     }

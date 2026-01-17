@@ -12,8 +12,11 @@ import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.carmindy.kipmod.network.TryAbilityBookPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -28,6 +31,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static net.carmindy.kipmod.items.AbilityBookFactory.ABILITY_KEY;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
 

@@ -10,7 +10,7 @@ import net.minecraft.nbt.NbtCompound;
  * Factory class to create and read ability books.
  */
 public class AbilityBookFactory {
-    private static final String ABILITY_KEY = "Ability";
+    public static final String ABILITY_KEY = "Ability";
 
     /** Creates an enchanted book ItemStack with the given ability */
     public static ItemStack createAbilityBook(Abilities ability) {

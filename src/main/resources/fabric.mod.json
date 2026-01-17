@@ -31,7 +31,7 @@
       "net.carmindy.kipmod.KIPModClient"
     ],
     "cardinal-components-entity": [
-      "net.carmindy.kipmod.component.KIPModComponents"
+      "net.carmindy.kipmod.component.KIPEntityComponents"
     ]
   },
   "mixins": [
