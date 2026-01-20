@@ -14,7 +14,7 @@ public class BookUseHandler {
 
     public static void registerHandler() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            if (world.isClient) return TypedActionResult.pass(player.getStackInHand(hand));
+            if (world.isClient()) return TypedActionResult.pass(player.getStackInHand(hand));
             ItemStack stack = player.getStackInHand(hand);
 
             if (!(stack.getItem() instanceof EnchantedBookItem))

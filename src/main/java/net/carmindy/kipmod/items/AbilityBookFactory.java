@@ -6,13 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 
-/**
- * Factory class to create and read ability books.
- */
+
 public class AbilityBookFactory {
     public static final String ABILITY_KEY = "Ability";
 
-    /** Creates an enchanted book ItemStack with the given ability */
     public static ItemStack createAbilityBook(Abilities ability) {
         ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
 
@@ -23,7 +20,6 @@ public class AbilityBookFactory {
         return book;
     }
 
-    /** Reads the ability from an enchanted book */
     public static Abilities getAbilityFromBook(ItemStack stack) {
         if (stack == null || stack.isEmpty() || !ItemStackNbtCompat.hasNbt(stack)) return null;
 

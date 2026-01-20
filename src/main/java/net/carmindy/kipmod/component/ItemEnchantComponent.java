@@ -4,17 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Component to store enchantments on items in your mod system.
- */
+
 public class ItemEnchantComponent {
 
     private final Map<String, Integer> enchantments = new HashMap<>();
 
-    // Get an empty component (or in real usage, attach it to an ItemStack)
     public static ItemEnchantComponent get(Object itemStack) {
-        // In your mod, this should fetch the component attached to the ItemStack
-        // Here we just return a new instance for demonstration
+
         return new ItemEnchantComponent();
     }
 

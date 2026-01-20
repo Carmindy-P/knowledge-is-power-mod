@@ -18,7 +18,7 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 | **Immutability**       | Enchanted Book - Unbreaking         | You become immutable briefly                     | 5s        |
 | **Regeneration Field** | Enchanted Book - Protection         | Create an AOE of regeneration                    | 10s       |
 | **Blast Protection**   | Enchanted Book - Blast Protection   | For a certain amount of times, blasts don't hurt | X times   |
-| **Fire Protection**    | Enchanted Book - Fire Protection    | Gives you fire resistance                        | 10s       |
+| **Fire Protection**    | Enchanted Book - Fire Protection    | Gives you fire resistance                        | Passive   |
 
 *More powers can be added by any mod or data-pack – the system is 100 % data-driven.*
 

@@ -48,7 +48,6 @@ public class BlastProtectionAbility implements Abilities {
             if (!source.isOf(DamageTypes.EXPLOSION) &&
                     !source.isOf(DamageTypes.PLAYER_EXPLOSION)) return true;
 
-            /* only protect if blast-protection is the CURRENT ability */
             if (!(KIPModComponents.ABILITIES.get(player).getAbility()
                     instanceof BlastProtectionAbility)) return true;
 

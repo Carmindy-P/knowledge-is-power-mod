@@ -12,7 +12,7 @@ public class EffBreakHandler {
 
             if (KIPModComponents.ABILITIES.get(player).isInstamine()) {
                 ((ServerWorld) world).breakBlock(pos, true, player);
-                return false; // cancel vanilla
+                return false;
             }
             return true;
         });

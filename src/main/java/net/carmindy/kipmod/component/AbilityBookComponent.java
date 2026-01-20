@@ -55,6 +55,12 @@ public class AbilityBookComponent {
                 }
             }
         }
+
+        NbtCompound tag = readNbt(stack);
+        if (tag != null && tag.contains(NBT_KEY)) {
+            return tag.getString(NBT_KEY);
+        }
+
         return null;
     }
 
@@ -79,7 +85,6 @@ public class AbilityBookComponent {
             if (ability != null) return ability;
         }
 
-        // Check custom component format
         ComponentMap components = stack.getComponents();
         NbtCompound storedEnchantments = (NbtCompound) components.getOrDefault(DataComponentTypes.CUSTOM_DATA, new NbtCompound());
         if (storedEnchantments.contains("minecraft:stored_enchantments")) {

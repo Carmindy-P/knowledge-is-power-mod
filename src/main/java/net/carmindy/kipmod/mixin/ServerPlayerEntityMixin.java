@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin {
 
-    /* any XP change – signature instead of name */
     @Inject(method = "addExperience(I)V", at = @At("HEAD"), require = 1)
     private void kipmod$onXp(int amount, CallbackInfo ci) {
         if (amount <= 0) return;

@@ -6,14 +6,14 @@ import org.ladysnake.cca.api.v3.component.Component;
 
 public interface AbilityComponent extends Component {
 
-    int getLevel(); // Get the player's ability level
-    void setLevel(int level); // Set the player's ability level
+    int getLevel();
+    void setLevel(int level);
 
-    @Nullable Abilities getAbility(); // Get the ability instance
+    @Nullable Abilities getAbility();
 
     void onXpGain(int orbValue);
 
-    void setAbility(@Nullable Abilities ability); // Assign an ability to the player
+    void setAbility(@Nullable Abilities ability);
     void tickCooldown();
     int getCooldown();
     void setCooldown(int ticks);
@@ -23,6 +23,6 @@ public interface AbilityComponent extends Component {
     int getCharges();
     void setCharges(int charges);
 
-    void setInstamine(boolean value); // Set the instamine flag
-    boolean isInstamine(); // Check if instamine is active
+    void setInstamine(boolean value);
+    boolean isInstamine();
 }

@@ -8,10 +8,6 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import net.minecraft.util.Identifier;
 
-/**
- * Registers all mod components with Cardinal Components API.
- * In this case, registers the player ability component.
- */
 public class KIPModComponents implements EntityComponentInitializer {
 
     public static ComponentKey<AbilityComponent> ABILITIES =
@@ -22,7 +18,6 @@ public class KIPModComponents implements EntityComponentInitializer {
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        // Register AbilityComponent for players, automatically copied on respawn
         registry.registerForPlayers(
                 ABILITIES,
                 AbilityComponentImpl::new,

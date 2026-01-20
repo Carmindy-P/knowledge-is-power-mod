@@ -68,7 +68,6 @@ public class ProtectionAbility implements  Abilities{
 
     @Override
     public void deactivate(ServerPlayerEntity player) {
-        // remove only the regeneration we gave
         player.removeStatusEffect(StatusEffects.REGENERATION);
     }
 }
