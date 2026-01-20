@@ -10,6 +10,7 @@ public class ModAbilities {
     public static final UnbreakingAbility UNBREAKING = new UnbreakingAbility();
     public static final ProtectionAbility PROTECTION = new ProtectionAbility();
     public static final BlastProtectionAbility BLASTPROTECTION = new BlastProtectionAbility();
+    public static final FireProtectionAbility FIREPROTECTION = new FireProtectionAbility();
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -21,5 +22,6 @@ public class ModAbilities {
         AbilityRegistry.register(UNBREAKING.getId(), UNBREAKING);
         AbilityRegistry.register(PROTECTION.getId(), PROTECTION);
         AbilityRegistry.register(BLASTPROTECTION.getId(), BLASTPROTECTION);
+        AbilityRegistry.register(FIREPROTECTION.getId(), FIREPROTECTION);
     }
 }

@@ -18,13 +18,14 @@ public record AbilitySettings(
         int fireSeconds,
         double heartsPerOrb,
         int orbDivisor,
-        int radius
+        int radius,
+        int times
 ) {
     private static final Logger LOG = LoggerFactory.getLogger("kipmod");
     private static final Gson GSON = new Gson();
 
     public static final AbilitySettings DEFAULT =
-            new AbilitySettings("dummy", 100, 200, 10.0, 4, 0.1, 10, 10);
+            new AbilitySettings("dummy", 100, 200, 10.0, 4, 0.1, 10, 10, 3);
 
     private static final Map<String, AbilitySettings> CACHE = new HashMap<>();
 
