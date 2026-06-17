@@ -156,11 +156,11 @@ BlastProtectionAbility.registerEvents();
 
 ## 🔗 Links
 
-| What            | URL                                      |
-|-----------------|------------------------------------------|
-| Source & Issues | https://github.com/yourname/KnowledgeIsPower |
-| CurseForge      | *(add once uploaded)*                    |
-| Discord         | *(add once created)*                     |
+| What            | URL                   |
+|-----------------|-----------------------|
+| Source & Issues | *(add once ready)*    |
+| CurseForge      | *(add once uploaded)* |
+| Discord         | *(add once created)*  |
 
 ---
 

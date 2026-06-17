@@ -10,6 +10,10 @@
     "minecraft:channeling",
     "minecraft:flame",
     "minecraft:blast_protection",
-    "minecraft:fire_protection"
+    "minecraft:fire_protection",
+    "minecraft:projectile_protection",
+    "minecraft:respiration",
+    "minecraft:thorns",
+    "minecraft:fire_aspect"
   ]
 }

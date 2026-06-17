@@ -130,10 +130,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
     @Override
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
-        KIPModComponents.ABILITIES = ComponentRegistry.getOrCreate(
-                Identifier.of(MOD_ID, "abilities"),
-                AbilityComponent.class
-        );
+
         ServerLifecycleEvents.SERVER_STARTED.register(server ->
                 AbilityRegistry.reload(server.getResourceManager()));
         ResourceManagerHelper.get(ResourceType.SERVER_DATA)
@@ -155,6 +152,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         UnbreakingAbility.registerEvents();
         BlastProtectionAbility.registerEvents();
         EffBreakHandler.register();
+        ProjectileProtectionAbility.registerEvents();
         registerPackets();
         registerDebugCommands();
         System.out.println("Handlers registered.");

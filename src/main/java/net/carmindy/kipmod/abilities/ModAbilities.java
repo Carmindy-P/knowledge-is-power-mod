@@ -11,6 +11,12 @@ public class ModAbilities {
     public static final ProtectionAbility PROTECTION = new ProtectionAbility();
     public static final BlastProtectionAbility BLASTPROTECTION = new BlastProtectionAbility();
     public static final FireProtectionAbility FIREPROTECTION = new FireProtectionAbility();
+    public static final ProjectileProtectionAbility PROJECTILE_PROTECTION = new ProjectileProtectionAbility();
+    public static final RespirationAbility RESPIRATION = new RespirationAbility();
+    public static final ThornsAbility THORNS = new ThornsAbility();
+    public static final FireAspectAbility FIRE_ASPECT = new FireAspectAbility();
+
+
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -23,5 +29,9 @@ public class ModAbilities {
         AbilityRegistry.register(PROTECTION.getId(), PROTECTION);
         AbilityRegistry.register(BLASTPROTECTION.getId(), BLASTPROTECTION);
         AbilityRegistry.register(FIREPROTECTION.getId(), FIREPROTECTION);
+        AbilityRegistry.register(PROJECTILE_PROTECTION.getId(), PROJECTILE_PROTECTION);
+        AbilityRegistry.register(RESPIRATION.getId(), RESPIRATION);
+        AbilityRegistry.register(THORNS.getId(), THORNS);
+        AbilityRegistry.register(FIRE_ASPECT.getId(), FIRE_ASPECT);
     }
 }

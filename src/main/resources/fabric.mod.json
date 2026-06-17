@@ -43,9 +43,6 @@
     "java": ">=21",
     "fabric-api": "*"
   },
-  "cardinal-components-entity": [
-    "net.carmindy.kipmod.component.KIPEntityComponents"
-  ],
   "suggests": {
     "another-mod": "*"
   },
