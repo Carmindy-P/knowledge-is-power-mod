@@ -1,6 +1,7 @@
 package net.carmindy.kipmod;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.AbilityComponent;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -23,7 +24,8 @@ public class KIPModServer implements DedicatedServerModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
                 (payload, ctx) -> ctx.server().execute(() ->
-                        KIPModComponents.ABILITIES.get(ctx.player()).tryUseAbility())
+                        KIPModComponents.ABILITIES.maybeGet(ctx.player())
+                                .ifPresent(AbilityComponent::tryUseAbility))
         );
     }
 }

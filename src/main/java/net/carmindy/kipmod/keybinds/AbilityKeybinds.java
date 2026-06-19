@@ -1,6 +1,5 @@
 package net.carmindy.kipmod.keybinds;
 
-import net.carmindy.kipmod.data.KIPModComponents;
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;

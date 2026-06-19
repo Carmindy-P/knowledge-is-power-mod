@@ -1,6 +1,6 @@
 package net.carmindy.kipmod.abilities;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +15,7 @@ public class EfficiencyAbility implements Abilities {
 
     @Override
     public String getName() {
-        return "Haste";
+        return "Instamine";
     }
 
     @Override
@@ -29,30 +29,31 @@ public class EfficiencyAbility implements Abilities {
     }
 
     @Override
-    public int getCooldownTicks() {
-        return 20 * 10; // 10 seconds
-    }
-
-    @Override
     public void activate(ServerPlayerEntity player) {
         if (player.getWorld().isClient()) return;
 
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        int duration = cfg.durationTicks();
+
         player.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.HASTE,
-                10 * 20,
+                duration,
                 5000,
-                false, false, true));
+                false, false, false));
 
         player.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.SPEED,
-                10 * 20,
+                duration,
                 0,
-                false, false, true));
+                false, false, false));
 
-        player.sendMessage(Text.literal("Haste surge!"), false);
-
-
+        player.sendMessage(Text.literal("Instamine!"), false);
         KIPModComponents.ABILITIES.get(player).setInstamine(true);
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
     }
 
     @Override
@@ -61,5 +62,12 @@ public class EfficiencyAbility implements Abilities {
         if (!player.hasStatusEffect(StatusEffects.HASTE)) {
             KIPModComponents.ABILITIES.get(player).setInstamine(false);
         }
+    }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        player.removeStatusEffect(StatusEffects.HASTE);
+        player.removeStatusEffect(StatusEffects.SPEED);
+        KIPModComponents.ABILITIES.get(player).setInstamine(false);
     }
 }

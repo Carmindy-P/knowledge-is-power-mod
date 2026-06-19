@@ -1,10 +1,10 @@
 package net.carmindy.kipmod;
 
-import net.carmindy.kipmod.abilities.Abilities;
-import net.carmindy.kipmod.abilities.AbilityRegistry;
-import net.carmindy.kipmod.abilities.ModAbilities;
-import net.carmindy.kipmod.data.AbilityBookComponent;
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.abilities.*;
+import net.carmindy.kipmod.config.KIPModAutoConfig;
+import net.carmindy.kipmod.component.AbilityBookComponent;
+import net.carmindy.kipmod.component.AbilityComponent;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.carmindy.kipmod.events.AbilityTickHandler;
 import net.carmindy.kipmod.events.BookUseHandler;
 import net.carmindy.kipmod.events.EffBreakHandler;
@@ -12,21 +12,36 @@ import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.carmindy.kipmod.network.TryAbilityBookPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static net.carmindy.kipmod.items.AbilityBookFactory.ABILITY_KEY;
 
 public class KnowledgeIsPowerMod implements ModInitializer {
 
     public static final String MOD_ID = "knowledge-is-power-mod";
 
     private void registerDebugCommands() {
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("kipmod")
                     .then(CommandManager.literal("debugbook")
@@ -62,6 +77,20 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                                 return 1;
                             })
                     )
+
+                    .then(CommandManager.literal("loyalty")
+                            .then(CommandManager.argument("player", net.minecraft.command.argument.EntityArgumentType.player())
+                                    .executes(context -> {
+                                        ServerPlayerEntity protector = context.getSource().getPlayer();
+                                        ServerPlayerEntity target = net.minecraft.command.argument.EntityArgumentType.getPlayer(context, "player");
+
+                                        LoyaltyAbility.setBond(protector.getUuid(), target.getUuid());
+                                        protector.sendMessage(Text.literal("You are now loyal to " + target.getName().getString()), false);
+                                        target.sendMessage(Text.literal(protector.getName().getString() + " has sworn loyalty to you!"), false);
+                                        return 1;
+                                    })
+                            )
+                    )
             );
         });
     }
@@ -91,7 +120,9 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
                     Abilities ability = AbilityRegistry.get(abilityId);
                     if (ability != null) {
-                        KIPModComponents.ABILITIES.get(player).setAbility(ability);
+                        KIPModComponents.ABILITIES.maybeGet(player).ifPresent(comp ->
+                                comp.setAbility(ability)
+                        );
                         player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
                     }
                 })
@@ -105,10 +136,9 @@ public class KnowledgeIsPowerMod implements ModInitializer {
 
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
-                (payload, ctx) -> ctx.server().execute(() -> {
-                    var comp = KIPModComponents.ABILITIES.get(ctx.player());
-                    comp.tryUseAbility();
-                })
+                (payload, ctx) -> ctx.server().execute(() ->
+                        KIPModComponents.ABILITIES.maybeGet(ctx.player())
+                                .ifPresent(AbilityComponent::tryUseAbility))
         );
     }
 
@@ -116,12 +146,40 @@ public class KnowledgeIsPowerMod implements ModInitializer {
     public void onInitialize() {
         System.out.println("KIP Mod initializing...");
 
-        registerPackets();
+        ServerLifecycleEvents.SERVER_STARTED.register(server ->
+                AbilityRegistry.reload(server.getResourceManager()));
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA)
+                .registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+                    @Override
+                    public Identifier getFabricId() {
+                        return Identifier.of("kipmod", "ability_settings");
+                    }
+                    @Override
+                    public void reload(ResourceManager manager) {
+                        AbilityRegistry.reload(manager);
+                    }
+                });
+        KIPModAutoConfig.init();
         ModAbilities.register();
+        System.out.println("[KIPMod] Registered " + AbilityRegistry.size() + " abilities");
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
+        AbilityRegistry.register();
+        SharpnessAbility.registerEvents();
+        CurseOfBindingAbility.registerEvents();
+        AquaAffinityAbility.registerEvents();
+        UnbreakingAbility.registerEvents();
+        FortuneAbility.registerEvents();
+        LoyaltyAbility.registerEvents();
+        MultishotAbility.registerEvents();
+        LootingAbility.registerEvents();
+        BlastProtectionAbility.registerEvents();
+        BreachAbility.registerEvents();
         EffBreakHandler.register();
+        ProjectileProtectionAbility.registerEvents();
+        registerPackets();
         registerDebugCommands();
         System.out.println("Handlers registered.");
     }
+
 }

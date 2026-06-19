@@ -1,0 +1,6 @@
+{
+  "id": "thorns",
+  "radius": 4.0,
+  "times": 8,
+  "cooldownTicks": 200
+}

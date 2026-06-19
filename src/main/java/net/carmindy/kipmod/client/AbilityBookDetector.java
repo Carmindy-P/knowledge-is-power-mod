@@ -18,7 +18,6 @@ public class AbilityBookDetector {
             while (client.options.useKey.wasPressed()) {
                 var stack = client.player.getMainHandStack();
                 if (stack.isOf(Items.ENCHANTED_BOOK)) {
-                    // send packet; server will do the real work
                     ClientPlayNetworking.send(new TryAbilityBookPayload());
                 }
             }
