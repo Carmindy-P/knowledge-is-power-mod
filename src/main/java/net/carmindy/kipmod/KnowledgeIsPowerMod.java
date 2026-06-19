@@ -41,6 +41,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
     public static final String MOD_ID = "knowledge-is-power-mod";
 
     private void registerDebugCommands() {
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("kipmod")
                     .then(CommandManager.literal("debugbook")
@@ -75,6 +76,20 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                                         Text.literal("Check console for detailed analysis"), false);
                                 return 1;
                             })
+                    )
+
+                    .then(CommandManager.literal("loyalty")
+                            .then(CommandManager.argument("player", net.minecraft.command.argument.EntityArgumentType.player())
+                                    .executes(context -> {
+                                        ServerPlayerEntity protector = context.getSource().getPlayer();
+                                        ServerPlayerEntity target = net.minecraft.command.argument.EntityArgumentType.getPlayer(context, "player");
+
+                                        LoyaltyAbility.setBond(protector.getUuid(), target.getUuid());
+                                        protector.sendMessage(Text.literal("You are now loyal to " + target.getName().getString()), false);
+                                        target.sendMessage(Text.literal(protector.getName().getString() + " has sworn loyalty to you!"), false);
+                                        return 1;
+                                    })
+                            )
                     )
             );
         });
@@ -146,11 +161,20 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                 });
         KIPModAutoConfig.init();
         ModAbilities.register();
+        System.out.println("[KIPMod] Registered " + AbilityRegistry.size() + " abilities");
         BookUseHandler.registerHandler();
         AbilityTickHandler.register();
         AbilityRegistry.register();
+        SharpnessAbility.registerEvents();
+        CurseOfBindingAbility.registerEvents();
+        AquaAffinityAbility.registerEvents();
         UnbreakingAbility.registerEvents();
+        FortuneAbility.registerEvents();
+        LoyaltyAbility.registerEvents();
+        MultishotAbility.registerEvents();
+        LootingAbility.registerEvents();
         BlastProtectionAbility.registerEvents();
+        BreachAbility.registerEvents();
         EffBreakHandler.register();
         ProjectileProtectionAbility.registerEvents();
         registerPackets();

@@ -11,6 +11,10 @@ public final class AbilityRegistry {
     private static final Map<String, Abilities> ABILITIES = new HashMap<>();
     private static final Map<String, AbilitySettings> SETTINGS = new HashMap<>();
 
+    public static java.util.Collection<Abilities> getAllAbilities() {
+        return ABILITIES.values();
+    }
+
     public static void reload(ResourceManager mgr) {
         SETTINGS.clear();
         for (String abilityId : ABILITIES.keySet()) {
@@ -29,6 +33,9 @@ public final class AbilityRegistry {
         return ABILITIES.get(id);
     }
 
+    public static int size() {
+        return ABILITIES.size();
+    }
     public static void register() {
     }
 }

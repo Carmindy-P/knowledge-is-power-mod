@@ -15,8 +15,34 @@ public class ModAbilities {
     public static final RespirationAbility RESPIRATION = new RespirationAbility();
     public static final ThornsAbility THORNS = new ThornsAbility();
     public static final FireAspectAbility FIRE_ASPECT = new FireAspectAbility();
-
-
+    public static final KnockbackAbility KNOCKBACK = new KnockbackAbility();
+    public static final WindBurstAbility WIND_BURST = new WindBurstAbility();
+    public static final QuickChargeAbility QUICK_CHARGE = new QuickChargeAbility();
+    public static final SoulSpeedAbility SOUL_SPEED = new SoulSpeedAbility();
+    public static final DepthStriderAbility DEPTH_STRIDER = new DepthStriderAbility();
+    public static final FrostWalkerAbility FROST_WALKER = new FrostWalkerAbility();
+    public static final SwiftSneakAbility SWIFT_SNEAK = new SwiftSneakAbility();
+    public static final AquaAffinityAbility AQUA_AFFINITY = new AquaAffinityAbility();
+    public static final CurseOfBindingAbility CURSEOFBINDING = new CurseOfBindingAbility();
+    public static final SharpnessAbility SHARPNESS = new SharpnessAbility();
+    public static final SmiteAbility SMITE = new SmiteAbility();
+    public static final SweepingEdgeAbility SWEEPING_EDGE = new SweepingEdgeAbility();
+    public static final PunchAbility PUNCH = new PunchAbility();
+    public static final BaneOfArthropodsAbility BANE_OF_ARTHROPODS = new BaneOfArthropodsAbility();
+    public static final ImpalingAbility IMPALING = new ImpalingAbility();
+    public static final DensityAbility DENSITY = new DensityAbility();
+    public static final InfinityAbility INFINITY = new InfinityAbility();
+    public static final LureAbility LURE = new LureAbility();
+    public static final PiercingAbility PIERCING = new PiercingAbility();
+    public static final BreachAbility BREACH = new BreachAbility();
+    public static final PowerAbility POWER = new PowerAbility();
+    public static final SilkTouchAbility SILK_TOUCH = new SilkTouchAbility();
+    public static final FortuneAbility FORTUNE = new FortuneAbility();
+    public static final LuckOfTheSeaAbility LUCK_OF_THE_SEA = new LuckOfTheSeaAbility();
+    public static final MultishotAbility MULTISHOT = new MultishotAbility();
+    public static final LootingAbility LOOTING = new LootingAbility();
+    public static final LoyaltyAbility LOYALTY = new LoyaltyAbility();
+    public static final RiptideAbility RIPTIDE = new RiptideAbility();
 
     public static void register() {
         AbilityRegistry.register(FLAME.getId(), FLAME);
@@ -33,5 +59,33 @@ public class ModAbilities {
         AbilityRegistry.register(RESPIRATION.getId(), RESPIRATION);
         AbilityRegistry.register(THORNS.getId(), THORNS);
         AbilityRegistry.register(FIRE_ASPECT.getId(), FIRE_ASPECT);
+        AbilityRegistry.register(KNOCKBACK.getId(), KNOCKBACK);
+        AbilityRegistry.register(WIND_BURST.getId(), WIND_BURST);
+        AbilityRegistry.register(QUICK_CHARGE.getId(), QUICK_CHARGE);
+        AbilityRegistry.register(SOUL_SPEED.getId(), SOUL_SPEED);
+        AbilityRegistry.register(DEPTH_STRIDER.getId(), DEPTH_STRIDER);
+        AbilityRegistry.register(FROST_WALKER.getId(), FROST_WALKER);
+        AbilityRegistry.register(SWIFT_SNEAK.getId(), SWIFT_SNEAK);
+        AbilityRegistry.register(AQUA_AFFINITY.getId(), AQUA_AFFINITY);
+        AbilityRegistry.register(CURSEOFBINDING.getId(), CURSEOFBINDING);
+        AbilityRegistry.register(SMITE.getId(), SMITE);
+        AbilityRegistry.register(SHARPNESS.getId(), SHARPNESS);
+        AbilityRegistry.register(SWEEPING_EDGE.getId(), SWEEPING_EDGE);
+        AbilityRegistry.register(PUNCH.getId(), PUNCH);
+        AbilityRegistry.register(BANE_OF_ARTHROPODS.getId(), BANE_OF_ARTHROPODS);
+        AbilityRegistry.register(IMPALING.getId(), IMPALING);
+        AbilityRegistry.register(DENSITY.getId(), DENSITY);
+        AbilityRegistry.register(INFINITY.getId(), INFINITY);
+        AbilityRegistry.register(LURE.getId(), LURE);
+        AbilityRegistry.register(PIERCING.getId(), PIERCING);
+        AbilityRegistry.register(BREACH.getId(), BREACH);
+        AbilityRegistry.register(POWER.getId(), POWER);
+        AbilityRegistry.register(SILK_TOUCH.getId(), SILK_TOUCH);
+        AbilityRegistry.register(FORTUNE.getId(), FORTUNE);
+        AbilityRegistry.register(LUCK_OF_THE_SEA.getId(), LUCK_OF_THE_SEA);
+        AbilityRegistry.register(MULTISHOT.getId(), MULTISHOT);
+        AbilityRegistry.register(LOOTING.getId(), LOOTING);
+        AbilityRegistry.register(LOYALTY.getId(), LOYALTY);
+        AbilityRegistry.register(RIPTIDE.getId(), RIPTIDE);
     }
 }
