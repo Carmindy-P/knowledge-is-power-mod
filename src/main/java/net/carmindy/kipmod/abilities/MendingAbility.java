@@ -4,6 +4,7 @@ import net.carmindy.kipmod.abilities.AbilityRegistry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+ //.description
 public class MendingAbility implements Abilities {
     @Override public String getId() { return "mending"; }
     @Override public String getName() { return "Mending"; }

@@ -95,15 +95,25 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         });
     }
 
-
-    public static void registerPackets() {
-
-
+    public static void registerPayloads() {
         PayloadTypeRegistry.playC2S().register(
                 TryAbilityBookPayload.ID,
-                PacketCodec.of(TryAbilityBookPayload::encode, TryAbilityBookPayload::decode)
+                PacketCodec.of(
+                        TryAbilityBookPayload::encode,
+                        TryAbilityBookPayload::decode
+                )
         );
 
+        PayloadTypeRegistry.playC2S().register(
+                AbilityUsePayload.ID,
+                PacketCodec.of(
+                        AbilityUsePayload::encode,
+                        AbilityUsePayload::decode
+                )
+        );
+    }
+
+    public static void registerServerReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(
                 TryAbilityBookPayload.ID,
                 (payload, ctx) -> ctx.server().execute(() -> {
@@ -113,32 +123,36 @@ public class KnowledgeIsPowerMod implements ModInitializer {
                     if (!(stack.getItem() instanceof net.minecraft.item.EnchantedBookItem)) return;
 
                     String abilityId = AbilityBookComponent.getAbility(stack);
+
                     if (abilityId == null) {
-                        player.sendMessage(Text.literal("No registered ability for this book."), false);
+                        player.sendMessage(
+                                Text.literal("No registered ability for this book."),
+                                false
+                        );
                         return;
                     }
 
                     Abilities ability = AbilityRegistry.get(abilityId);
+
                     if (ability != null) {
-                        KIPModComponents.ABILITIES.maybeGet(player).ifPresent(comp ->
-                                comp.setAbility(ability)
+                        KIPModComponents.ABILITIES.maybeGet(player)
+                                .ifPresent(comp -> comp.setAbility(ability));
+
+                        player.sendMessage(
+                                Text.literal("Ability learned: " + ability.getName()),
+                                false
                         );
-                        player.sendMessage(Text.literal("Ability learned: " + ability.getName()), false);
                     }
                 })
-        );
-
-
-        PayloadTypeRegistry.playC2S().register(
-                AbilityUsePayload.ID,
-                PacketCodec.of(AbilityUsePayload::encode, AbilityUsePayload::decode)
         );
 
         ServerPlayNetworking.registerGlobalReceiver(
                 AbilityUsePayload.ID,
                 (payload, ctx) -> ctx.server().execute(() ->
-                        KIPModComponents.ABILITIES.maybeGet(ctx.player())
-                                .ifPresent(AbilityComponent::tryUseAbility))
+                        KIPModComponents.ABILITIES
+                                .maybeGet(ctx.player())
+                                .ifPresent(AbilityComponent::tryUseAbility)
+                )
         );
     }
 
@@ -177,8 +191,7 @@ public class KnowledgeIsPowerMod implements ModInitializer {
         BreachAbility.registerEvents();
         EffBreakHandler.register();
         ProjectileProtectionAbility.registerEvents();
-        registerPackets();
-        registerDebugCommands();
+        registerPayloads();        registerDebugCommands();
         System.out.println("Handlers registered.");
     }
 

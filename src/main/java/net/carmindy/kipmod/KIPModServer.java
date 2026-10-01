@@ -8,24 +8,11 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.PacketCodec;
 
+import static net.carmindy.kipmod.KnowledgeIsPowerMod.registerServerReceivers;
+
 public class KIPModServer implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
-        KIPModComponents.class.getName();
-        registerServerPackets();
-    }
-
-    public static void registerServerPackets() {
-        PayloadTypeRegistry.playC2S().register(
-                AbilityUsePayload.ID,
-                PacketCodec.of(AbilityUsePayload::encode, AbilityUsePayload::decode)
-        );
-
-        ServerPlayNetworking.registerGlobalReceiver(
-                AbilityUsePayload.ID,
-                (payload, ctx) -> ctx.server().execute(() ->
-                        KIPModComponents.ABILITIES.maybeGet(ctx.player())
-                                .ifPresent(AbilityComponent::tryUseAbility))
-        );
+        registerServerReceivers();
     }
 }
