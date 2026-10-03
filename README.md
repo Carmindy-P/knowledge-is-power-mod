@@ -7,13 +7,18 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 
 ## 🌟 Features
 
-| Power | Book | Effect | Cool-down |
-|-------|------|--------|-----------|
-| **Flame Burst** | Enchanted Book – Flame | Ignite the entity/block you’re looking at | 10 s |
-| **Haste** | Enchanted Book – Efficiency | 10 s of **Haste V**, **Speed** and instant-mining | 10 s |
-| **Flight** | Enchanted Book – Feather Falling | 15 s creative flight + 10 s slow-falling after expiry | 15 s |
-| **Lightning Strike** | Enchanted Book – Channeling | Call a lightning bolt on the target | 10 s |
-| **Mending** | Enchanted Book – Mending | Heals hearts using experience | Passive |
+| Power                  | Book                                | Effect                                           | Cool-down |
+|------------------------|-------------------------------------|--------------------------------------------------|-----------|
+| **Flame Burst**        | Enchanted Book – Flame              | Ignite what you’re looking at                    | 10 s      |
+| **Instamine**          | Enchanted Book – Efficiency         | Haste, speed and instant-mining                  | 10 s      |
+| **Flight**             | Enchanted Book – Feather Falling    | Flight                                           | 15 s      |
+| **Lightning Strike**   | Enchanted Book – Channeling         | Call a lightning bolt where you look             | 10 s      |
+| **Healing**            | Enchanted Book – Mending            | Heals hearts using experience                    | Passive   |
+| **Invisibility**       | Enchanted Book – Curse of Vanishing | Invisibility                                     | 10s       |
+| **Immutability**       | Enchanted Book - Unbreaking         | You become immutable briefly                     | 5s        |
+| **Regeneration Field** | Enchanted Book - Protection         | Create an AOE of regeneration                    | 10s       |
+| **Blast Protection**   | Enchanted Book - Blast Protection   | For a certain amount of times, blasts don't hurt | X times   |
+| **Fire Protection**    | Enchanted Book - Fire Protection    | Gives you fire resistance                        | Passive   |
 
 *More powers can be added by any mod or data-pack – the system is 100 % data-driven.*
 
@@ -44,39 +49,101 @@ No GUI, no clutter – just hold the book, right-click to learn, press **R** to 
 | `/kipmod debugbook` | Dumps full NBT of the book you’re holding to server console – useful when creating custom books. |
 
 ---
+## 🧪 For Pack-Makers & Addon Devs
 
-## 🔧 For Developers
+### ✅ Add a new enchantment → existing power (no code)
+1. Create a **data-pack** (or include in your mod’s `data/`)
+2. Add the enchantment to the desired tag:  
+   `data/kipmod/tags/enchantment/grants_flame_ability.json`
+   ```json
+   {
+     "replace": false,
+     "values": [
+       "your_mod:blazing_touch"
+     ]
+   }
+   ```
+   Done! Any book with `your_mod:blazing_touch` now grants **Flame Burst**.
 
-### Add your own power in 3 steps
+---
 
-1. Implement `Abilities`
+### ✅ Add a brand-new ability (tiny Java snippet)
+
+1. Implement `Abilities`:
+   ```java
+   public class VoidBlinkAbility implements Abilities {
+       public String getId() { return "void_blink"; }
+       public void activate(ServerPlayerEntity player){
+           // your logic
+       }
+       // …other methods
+   }
+   ```
+   Register it:
+```java
+AbilityRegistry.register("void_blink", new VoidBlinkAbility());
+```
+### Adding a custom ability
+
+1. Create the settings file  
+   `data/<yourmod>/ability_settings/<ability_name>.json`
+
+   ```json
+   {
+     "id": "custom_ability",
+     "durationTicks": 200,
+     "cooldownTicks": 300,
+     "range": 10.0,
+     "fireSeconds": 4,
+     "heartsPerOrb": 0.1,
+     "orbDivisor": 10,
+     "radius": 10,
+     "times": 3
+   }
+   ```
+Map it to an enchantment
+Use the tag system (#yourmod:ability/custom_ability) or
+Register a fallback mapping in your mod code.
+# KIP Abilities – Developer README
+
+## Advanced Features (Devs)
+
+### Ability Settings
+Every JSON file placed in `data/kipmod/ability_settings/` is loaded automatically.  
+Supported keys and their meanings:
+
+| JSON key        | Meaning |
+|----------------|---------|
+| `durationTicks` | Effect duration in ticks|
+| `cooldownTicks` | Cool-down length in ticks |
+| `range`         | Ray-cast range for targeted abilities |
+| `fireSeconds`   | Fire duration in seconds |
+| `heartsPerOrb`  | Health restored per XP orb |
+| `orbDivisor`    | XP value divisor |
+| `radius`        | AOE radius  |
+| `times`         | Number of procs  |
+
+No additional registration code is required.
+
+### Cardinal Components API Quick-start
+```java
+// get the player's current ability
+Abilities ability = KIPModComponents.ABILITIES.get(player).getAbility();
+
+// check cool-down
+int cooldown = KIPModComponents.ABILITIES.get(player).getCooldown();
+
+// attempt to fire the ability
+boolean success = KIPModComponents.ABILITIES.get(player).tryUseAbility();
+```
+### Register Custom Events
+Drop this in your mod initializer:
 
 ```java
-public class MyPower implements Abilities {
-    public String getId() { return "my_power"; }
-    public void activate(ServerPlayerEntity player){
-        // your logic
-    }
-    // …other methods
-}
+// For damage blocking, XP collection, etc.
+UnbreakingAbility.registerEvents();
+BlastProtectionAbility.registerEvents();
 ```
-## Register it
-
-Add to `ModAbilities`:
-```java
-public static final MyPower MY_POWER = new MyPower();
-```
-In `ModAbilities.register()`:
-```java
-AbilityRegistry.register(MY_POWER.getId(), MY_POWER);
-```
-
-Map the enchant in AbilityBookComponent.ENCHANT_TO_ABILITY:
-```java
-"minecraft:my_enchant", "my_power"
-```
-That’s it – the existing book-learning, keybind and cooldown code works automatically.
-
 ---
 
 ## 📦 Installation
@@ -89,14 +156,14 @@ That’s it – the existing book-learning, keybind and cooldown code works auto
 
 ## 🔗 Links
 
-| What            | URL                                      |
-|-----------------|------------------------------------------|
-| Source & Issues | https://github.com/yourname/KnowledgeIsPower |
-| CurseForge      | *(add once uploaded)*                    |
-| Discord         | *(add once created)*                     |
+| What            | URL                   |
+|-----------------|-----------------------|
+| Source & Issues | *(add once ready)*    |
+| CurseForge      | *(add once uploaded)* |
+| Discord         | *(add once created)*  |
 
 ---
 
 ## 📄 License
 **MIT** – do whatever you want, just give credit.  
-Made with Fabric by **Carmindy**
+Made with Fabric by **Carmindy Creates**

@@ -1,0 +1,6 @@
+{
+  "id": "knockback",
+  "durationTicks": 40,
+  "range": 4.0,
+  "cooldownTicks": 200
+}

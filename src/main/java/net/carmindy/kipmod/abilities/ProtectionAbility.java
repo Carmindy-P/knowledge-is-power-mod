@@ -1,0 +1,73 @@
+package net.carmindy.kipmod.abilities;
+
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Box;
+
+public class ProtectionAbility implements  Abilities{
+    public static final int REGENERATION_DURATION_TICKS = 20*10;
+    public static final int RADIUS = 10;
+
+    @Override
+    public String getId() {
+        return "protection";
+    }
+
+    @Override
+    public String getName() {
+        return "Regeneration Field";
+    }
+
+    @Override
+    public String getDescription() {
+        return "An AOE of regeneration";
+    }
+
+    @Override
+    public boolean isOneTimeUse() {
+        return false;
+    }
+
+    @Override
+    public void activate(ServerPlayerEntity player) {
+        if (player.getWorld().isClient()) return;
+
+        AbilitySettings cfg = AbilityRegistry.settings(getId());
+        int duration = cfg.durationTicks();
+        int radius   = cfg.radius();
+
+        ServerWorld world = player.getServerWorld();
+        Box box = Box.of(player.getPos(), radius, radius, radius);
+
+        for (PlayerEntity target : world.getPlayers()) {
+            if (target.squaredDistanceTo(player) <= radius * radius) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        StatusEffects.REGENERATION,
+                        duration,
+                        1,
+                        false, true, false
+                ));
+            }
+        }
+        player.sendMessage(Text.literal("Regeneration field activated!"), false);
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        return AbilityRegistry.settings(getId()).cooldownTicks();
+    }
+
+    @Override
+    public void tick(ServerPlayerEntity player) {
+
+    }
+
+    @Override
+    public void deactivate(ServerPlayerEntity player) {
+        player.removeStatusEffect(StatusEffects.REGENERATION);
+    }
+}

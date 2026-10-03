@@ -4,8 +4,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.carmindy.kipmod.data.KIPModComponents;
-import net.carmindy.kipmod.abilities.Abilities;
+import net.carmindy.kipmod.component.KIPModComponents;
 
 public class AbilityTickHandler {
     public static void register() {

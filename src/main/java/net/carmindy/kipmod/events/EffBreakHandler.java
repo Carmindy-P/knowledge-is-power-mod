@@ -1,10 +1,8 @@
 package net.carmindy.kipmod.events;
 
-import net.carmindy.kipmod.data.KIPModComponents;
+import net.carmindy.kipmod.component.KIPModComponents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.block.BlockState;
 
 public class EffBreakHandler {
 
@@ -14,7 +12,7 @@ public class EffBreakHandler {
 
             if (KIPModComponents.ABILITIES.get(player).isInstamine()) {
                 ((ServerWorld) world).breakBlock(pos, true, player);
-                return false; // cancel vanilla
+                return false;
             }
             return true;
         });

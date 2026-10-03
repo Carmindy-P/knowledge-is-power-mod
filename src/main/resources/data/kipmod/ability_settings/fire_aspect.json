@@ -1,0 +1,6 @@
+{
+  "id": "fire_aspect",
+  "range": 5.0,
+  "fireSeconds": 6,
+  "cooldownTicks": 200
+}
