@@ -13,7 +13,7 @@ public class LoyaltyAbility implements Abilities {
 
     @Override public String getId()   { return "loyalty"; }
     @Override public String getName() { return "Loyalty"; }
-    @Override public String getDescription() { return "Choose one player, they cannot harm you."; }
+    @Override public String getDescription() { return "Choose one player, they cannot harm you. /kipmod loyalty <player>"; }
     @Override public boolean isOneTimeUse() { return false; }
     @Override public int getCooldownTicks() { return 0; }
 

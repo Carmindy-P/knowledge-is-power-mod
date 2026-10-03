@@ -1,5 +1,6 @@
 package net.carmindy.kipmod.keybinds;
 
+import net.carmindy.kipmod.hud.AbilityHud;
 import net.carmindy.kipmod.network.AbilityUsePayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -10,21 +11,30 @@ import org.lwjgl.glfw.GLFW;
 
 public class AbilityKeybinds {
 
-    public static KeyBinding USE_ABILITY;
+    private static KeyBinding abilityKey;
 
     public static void register() {
-        USE_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.kipmod.use_ability",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
-                "category.kipmod"
-        ));
+
+        abilityKey = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        "key.knowledge-is-power-mod.ability",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_R,
+                        "category.knowledge-is-power-mod"
+                )
+        );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
 
-            while (USE_ABILITY.wasPressed()) {
-                ClientPlayNetworking.send(AbilityUsePayload.INSTANCE);
+            while (abilityKey.wasPressed()) {
+
+                if (ClientPlayNetworking.canSend(
+                        AbilityUsePayload.ID)) {
+
+                    ClientPlayNetworking.send(
+                            AbilityUsePayload.INSTANCE
+                    );
+                }
             }
         });
     }

@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 
 public class KIPModComponents implements EntityComponentInitializer {
 
-    public static ComponentKey<AbilityComponent> ABILITIES =
+    public static final ComponentKey<AbilityComponent> ABILITIES =
             ComponentRegistry.getOrCreate(
                     Identifier.of(KnowledgeIsPowerMod.MOD_ID, "abilities"),
                     AbilityComponent.class

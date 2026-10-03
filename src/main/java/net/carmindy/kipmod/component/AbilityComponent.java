@@ -3,6 +3,7 @@ package net.carmindy.kipmod.component;
 import net.carmindy.kipmod.abilities.Abilities;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.Component;
+import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 public interface AbilityComponent extends Component {
 
@@ -25,4 +26,9 @@ public interface AbilityComponent extends Component {
 
     void setInstamine(boolean value);
     boolean isInstamine();
+
+    void copyFrom(
+            AbilityComponent original,
+            RespawnCopyStrategy strategy
+    );
 }
